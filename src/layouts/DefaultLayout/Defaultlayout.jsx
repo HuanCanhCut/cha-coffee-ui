@@ -8,10 +8,12 @@ const cx = classNames.bind(style)
 // eslint-disable-next-line react/prop-types
 const DefaultLayout = ({ children }) => {
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper', 'grid', 'wide')}>
             <Header />
-            <Sidebar />
-            <div className={cx('container')}>{children}</div>
+            <div className={cx('container', 'row')}>
+                <Sidebar />
+                <div className={cx('content')}>{children}</div>
+            </div>
         </div>
     )
 }

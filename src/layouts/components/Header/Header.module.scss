@@ -1,7 +1,14 @@
 .wrapper {
-    width: 100vw;
     height: var(--default-layout-header-height);
-    max-width: 1280px;
-    position: fixed;
+    background-color: var(--default-layout-background-color);
+    position: sticky;
     top: 0;
+}
+
+.logo-container {
+    height: var(--default-layout-header-height);
+
+    img {
+        height: var(--default-layout-header-height);
+    }
 }

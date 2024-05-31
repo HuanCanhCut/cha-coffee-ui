@@ -1,12 +1,13 @@
 .wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    position: relative;
     color: var(--text-color);
+    height: 100vh;
 }
 
 .container {
-    margin-top: var(--default-layout-header-height);
+    margin: 0;
+}
+
+.content {
+    padding: 0 8px;
+    flex: 1;
 }
