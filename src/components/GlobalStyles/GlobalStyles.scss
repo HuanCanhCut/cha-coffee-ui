@@ -6,6 +6,8 @@
     --black: #000;
     --white: #fff;
     --text-color: rgba(22, 24, 35, 0.9);
+    --text-color-tertiary: rgba(22, 24, 35, 0.5);
+    --text-color-secondary: rgba(22, 24, 35, 0.75);
     --default-layout-background-color: #fff;
 
     // default layout size
@@ -50,15 +52,15 @@ body {
     background-color: var(--default-layout-background);
 
     .tippy-box {
-        background-color: #434343;
+        background-color: #6e6e6e;
         border-radius: 8px;
         font-weight: 500;
-        padding: 4px 8px;
+        padding: 2px 6px;
         font-size: 1.4rem;
         color: #fff;
     }
     .tippy-arrow {
-        color: #434343;
+        color: #6e6e6e;
     }
 }
 
@@ -82,44 +84,13 @@ input,
     outline: none;
     border: none;
     background-color: transparent;
-    font-family: TiktokFont, sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 a[href] {
     color: var(--text-color);
     text-decoration: none;
     line-height: 1;
-}
-
-// font emmbeded
-@font-face {
-    font-family: TiktokFont;
-    src: url('/assets/fonts/TikTokFont-Regular.woff2');
-    font-weight: 400;
-}
-
-@font-face {
-    font-family: TiktokFont;
-    src: url('/assets/fonts/TikTokFont-Regular.woff2');
-    font-weight: 500;
-}
-
-@font-face {
-    font-family: TiktokFont;
-    src: url('/assets/fonts/TikTokFont-Semibold.woff2');
-    font-weight: 600;
-}
-
-@font-face {
-    font-family: TiktokFont;
-    src: url('/assets/fonts/TikTokFont-Bold.woff2');
-    font-weight: 700;
-}
-
-@font-face {
-    font-family: TiktokDisplayFont;
-    src: url('/assets/fonts/TikTokFont-Semibold.woff2');
-    font-weight: 600;
 }
 
 .overlay {
@@ -148,13 +119,14 @@ a[href] {
 }
 
 .custom-toast {
-    background-color: var(--background-toast) !important;
+    background-color: #5d5d5d !important;
     color: #fff !important;
     font-size: 1.4rem !important;
     line-height: 1.5 !important;
     min-height: auto !important;
     padding: 8px 40px !important;
-    font-family: TiktokFont, sans-serif;
+    font-family: 'Poppins', sans-serif;
+
     font-weight: 600 !important;
     z-index: 9999999999;
 }

@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import GlobalStyles from './components/GlobalStyles/GlobalStyle.jsx'
+import 'tippy.js/dist/tippy.css'
 import './index.css'
 import './grid.scss'
 
