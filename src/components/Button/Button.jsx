@@ -5,24 +5,9 @@ import { forwardRef } from 'react'
 
 const cx = classNames.bind(style)
 
+// eslint-disable-next-line react-refresh/only-export-components
 const Button = (
-    {
-        to,
-        primary = false,
-        outline = false,
-        small = false,
-        large = false,
-        text = false,
-        disable = false,
-        rounded = false,
-        roundedOutline = false,
-        iconBtn = false,
-        className,
-        leftIcon,
-        children,
-        onClick,
-        ...passProps
-    },
+    { to, primary = false, outline = false, iconBtn = false, className, leftIcon, children, onClick, ...passProps },
     ref
 ) => {
     let Component = 'button'
@@ -41,13 +26,7 @@ const Button = (
         [className]: className,
         primary,
         outline,
-        small,
-        large,
-        text,
-        disable,
         iconBtn,
-        rounded,
-        roundedOutline,
     })
 
     return (

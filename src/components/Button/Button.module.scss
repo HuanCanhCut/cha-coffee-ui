@@ -2,11 +2,9 @@
     min-width: 100px;
     font-size: 1.6rem;
     padding: 10px 16px;
-    border-radius: 2px;
+    border-radius: 92px;
     font-weight: 600;
     cursor: pointer;
-    border: 1px solid transparent;
-    background-color: rgba(255, 255, 255, 0.08);
     margin: 0 8px;
     color: var(--text-color);
     transition: background 0.1s linear;
@@ -14,6 +12,11 @@
     &.disable {
         opacity: 0.8;
         user-select: none;
+    }
+
+    .title {
+        color: #fff;
+        font-weight: 500;
     }
 }
 
@@ -31,89 +34,10 @@
 
 // Button type
 
-.rounded {
-    border-radius: 2px;
-    color: var(--text-color);
-    border-color: rgba(22, 24, 35, 0.12);
-    background-color: rgba(255, 255, 255, 0.08);
-    &:hover {
-        background-color: rgba(245, 245, 245, 1);
-    }
-    &.darkMode {
-        &:hover {
-            background-color: rgba(46, 46, 46, 1);
-        }
-    }
-}
-
 .primary {
-    display: flex;
-    margin: 0;
-    justify-content: center;
-    color: #fff !important;
     background-color: var(--primary);
-    border: 2px;
-    border-color: var(--primary);
-    &:hover {
-        border-color: var(--primary);
-        background: linear-gradient(0deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.06)), #fe2c55;
-    }
 }
 
 .outline {
-    color: var(--primary);
-    border-radius: 2px;
-    border-color: currentColor;
-    background-color: transparent;
-    &:hover {
-        background-color: rgba(254, 44, 85, 0.08);
-    }
-}
-
-// Button sizes
-
-.small {
-    min-width: 88px;
-    padding: 4px 16px;
-}
-
-.large {
-    min-width: 148px;
-    padding: 14px 16px;
-}
-
-.text {
-    &:hover {
-        text-decoration: underline;
-    }
-}
-
-.disable {
-    border-radius: 2px;
-    padding: 14px 0;
-    margin-left: 0;
-    background-color: var(--text-color-opacity-12);
-    color: #fff;
-    cursor: no-drop;
-}
-
-.roundedOutline {
-    border-color: var(--text-color-opacity-12);
-    color: var(--text-color);
-    background-color: transparent;
-    &:hover {
-        background-color: rgba(245, 245, 245, 1);
-        border-color: var(--text-color-opacity-12);
-    }
-}
-
-.iconBtn {
-    min-width: 32px;
-    aspect-ratio: 1/1;
-    border-radius: 50%;
-    background-color: var(--text-color-opacity-12);
-    padding: 0;
-    &:hover {
-        background-color: var(--text-color-opacity-08);
-    }
+    border: 1.7px solid var(--primary);
 }
