@@ -1,0 +1,44 @@
+.wrapper {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    background-color: var(--default-background-color-modal);
+
+    .header {
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        box-shadow: var(--default-border-shadow);
+
+        .go-back {
+            color: #ffffffdf;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+
+            .go-back-icon {
+                margin-right: 8px;
+            }
+        }
+    }
+
+    .main {
+        margin-top: 30px;
+        padding: 0 20px;
+
+        .search {
+            background-color: transparent;
+            padding-left: 0;
+            border: none;
+            border-radius: 0;
+            border-bottom: 1px solid rgb(168, 168, 168);
+        }
+    }
+
+    .close-modal {
+        font-size: 3rem;
+        cursor: pointer;
+        color: white;
+    }
+}

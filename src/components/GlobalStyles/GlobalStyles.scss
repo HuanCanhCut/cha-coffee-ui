@@ -5,7 +5,10 @@
     --primary: #f79326;
     --black: #000;
     --white: #fff;
+    --text-color: #99ffe1;
     --default-layout-background: radial-gradient(circle at 50% 50%, #3cc487, #00656b);
+    --default-background-color-modal: #00656b;
+    --default-border-shadow: 0px 1px 1px rgb(0 0 0 / 12%);
 
     // default layout size
     --default-layout-header-height: 60px;
@@ -107,33 +110,6 @@ a[href] {
     transform: translate(-50%, -50%);
     border-radius: 10px;
     z-index: 999;
-}
-
-.Toastify__toast-container {
-    width: auto !important;
-    margin-top: 24px !important;
-}
-
-.custom-toast {
-    background-color: #5d5d5d !important;
-    color: #fff !important;
-    font-size: 1.4rem !important;
-    line-height: 1.5 !important;
-    min-height: auto !important;
-    padding: 8px 40px !important;
-    font-family: 'Poppins', sans-serif;
-
-    font-weight: 600 !important;
-    z-index: 9999999999;
-}
-
-.Toastify__toast-body {
-    padding: 0 !important;
-}
-
-.Toastify__toast-icon,
-.Toastify__close-button {
-    display: none !important;
 }
 
 .ReactModal__Overlay {

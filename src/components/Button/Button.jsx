@@ -7,7 +7,7 @@ const cx = classNames.bind(style)
 
 // eslint-disable-next-line react-refresh/only-export-components
 const Button = (
-    { to, primary = false, outline = false, iconBtn = false, className, leftIcon, children, onClick, ...passProps },
+    { to, primary = false, outline = false, className, leftIcon, children, onClick, ...passProps },
     ref
 ) => {
     let Component = 'button'
@@ -26,7 +26,6 @@ const Button = (
         [className]: className,
         primary,
         outline,
-        iconBtn,
     })
 
     return (

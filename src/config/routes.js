@@ -1,5 +1,6 @@
 const routeConfig = {
     home: '/',
+    mobileSearch: '/search',
     order: '/order',
     product: '/product',
 }

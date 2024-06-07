@@ -1,0 +1,103 @@
+.popper-wrapper {
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.wrapper {
+    width: min(700px, calc(100vw - 40px));
+
+    background: var(--default-background-color-modal);
+    color: #fff;
+    text-align: center;
+    position: relative;
+
+    .header {
+        text-align: center;
+        border-bottom: 1px solid gray;
+        padding: 10px 4px;
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .welcome-container {
+            height: 100%;
+            flex: 1;
+        }
+
+        .close-modal-btn {
+            color: #efefefe6;
+            font-size: 3rem;
+            cursor: pointer;
+            padding: 10px 12px;
+        }
+    }
+
+    .title {
+        font-weight: 500;
+        font-size: 3rem;
+        background-image: linear-gradient(-90deg, #50d3ff, #00f7ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-top: 10px;
+    }
+
+    .body {
+        padding: 0 100px;
+    }
+
+    .input-group {
+        width: 100%;
+        margin: 20px 0;
+        display: flex;
+        gap: 10px;
+        flex-direction: column;
+        text-align: left;
+
+        input {
+            padding: 12px 8px;
+            border-radius: 5px;
+            width: 100%;
+            background-color: #fff;
+        }
+
+        .error {
+            font-size: 1.4rem;
+            color: #fe2c55;
+            font-weight: 600;
+        }
+    }
+
+    .login-btn {
+        width: 100%;
+        margin: 0;
+        padding: 12px 0;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    .small {
+        display: block;
+        font-size: 1.4rem;
+        margin: 12px 0;
+        color: #99ffe1;
+    }
+
+    .footer {
+        padding: 20px 40px;
+        border-top: 1px solid gray;
+
+        .switch {
+            font-weight: 500;
+            cursor: pointer;
+            color: #99ffe1;
+        }
+    }
+}
+
+@media (max-width: 700px) {
+    .body {
+        padding: 0 40px !important;
+    }
+}

@@ -1,0 +1,61 @@
+.wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 80%;
+    word-wrap: break-word;
+    background: #00767c;
+    z-index: 999;
+    padding: 10px 0 10px 10px;
+    transition: all 0.3s ease-in-out;
+    transform: translateX(-100%);
+    overflow: scroll;
+
+    &.open {
+        transform: translateX(0);
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 3rem;
+        cursor: pointer;
+        color: white;
+    }
+
+    .header {
+        width: 100%;
+        padding-left: 16px;
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-top: 20px;
+        }
+
+        .full-name {
+            font-size: 2rem;
+            color: white;
+            margin-top: 10px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+
+            .admin {
+                margin-left: 10px;
+                font-size: 1.6rem;
+                color: var(--primary);
+            }
+        }
+    }
+}
+
+@media (min-width: 740px) and (max-width: 1023px) {
+    .wrapper {
+        width: 60%;
+    }
+}

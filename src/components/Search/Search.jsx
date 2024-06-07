@@ -6,9 +6,13 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons'
 const cx = classNames.bind(styles)
 
 // eslint-disable-next-line react/prop-types
-const Search = () => {
+const Search = ({ className }) => {
+    const classes = cx('search', {
+        [className]: className,
+    })
+
     return (
-        <div className={cx('search', 'col', 'l-4', 'm-5', 'c-8')}>
+        <div className={classes}>
             <div className={cx('search-icon')}>
                 <FontAwesomeIcon icon={faSearch} />
             </div>

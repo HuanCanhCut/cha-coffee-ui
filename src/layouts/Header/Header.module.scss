@@ -5,7 +5,7 @@
     justify-content: space-between;
     position: sticky;
     top: 0;
-    box-shadow: 0px 1px 1px rgb(0 0 0 / 12%);
+    box-shadow: var(--default-border-shadow);
 }
 
 .logo-container {
@@ -27,18 +27,25 @@
 .menu-btn {
     color: #fff;
     font-size: 2rem;
+    padding: 8px;
+    cursor: pointer;
 }
 
 .header-right {
-    .row {
+    .header-right-row {
         justify-content: flex-end;
     }
-
     .avatar {
         width: 32px;
         height: 32px;
         border-radius: 50%;
         object-fit: cover;
+        cursor: pointer;
+        margin-left: 12px;
+    }
+    .search-btn {
+        color: #fff;
+        font-size: 1.8rem;
         cursor: pointer;
     }
 }
