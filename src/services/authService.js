@@ -1,14 +1,12 @@
 import { showToast } from '~/project/services.'
-import request from '../utils/httpRequest'
+import * as request from '../utils/httpRequest'
 
 export const login = async ({ email, password }) => {
     try {
-        const response = await request.post('auth/login', {
+        return await request.post('auth/login', {
             email,
             password,
         })
-
-        return response.data
     } catch (error) {
         console.log(error)
         if (error.response.status === 409) {
@@ -19,12 +17,11 @@ export const login = async ({ email, password }) => {
 
 export const getCurrentUser = async ({ accessToken }) => {
     try {
-        const response = await request.get('auth/me', {
+        return await request.get('auth/me', {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
         })
-        return response.data
     } catch (error) {
         console.log(error)
     }

@@ -27,12 +27,12 @@ html {
 
     ::-webkit-scrollbar-thumb {
         border-radius: 4px;
-        background-color: rgba(22, 24, 35, 0.25);
+        background-color: rgb(45, 241, 208);
     }
 
     *::-webkit-scrollbar-track {
         border-radius: 0;
-        background-color: transparent !important;
+        background-color: rgb(21, 141, 168) !important;
     }
 }
 
@@ -70,6 +70,7 @@ body[class='ReactModal__Body--open'] {
 body {
     overflow-x: hidden;
     overflow-y: overlay;
+    color: var(--text-color);
 }
 
 input[type='number']::-webkit-inner-spin-button,
@@ -84,6 +85,10 @@ input,
     border: none;
     background-color: transparent;
     font-family: 'Poppins', sans-serif;
+}
+
+button {
+    cursor: pointer;
 }
 
 a[href] {
@@ -109,7 +114,7 @@ a[href] {
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 10px;
-    z-index: 999;
+    z-index: 999999999999;
 }
 
 .ReactModal__Overlay {

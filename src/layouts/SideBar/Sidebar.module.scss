@@ -1,3 +1,32 @@
 .wrapper {
     font-size: 1.6rem;
+    height: calc(100vh - var(--default-layout-header-height));
+    padding: 0 16px;
+    position: fixed;
+    width: 25%;
+    margin-top: 20px;
+    top: var(--default-layout-header-height);
+    left: 0;
+    overflow-y: overlay;
+}
+
+.categories-wrapper {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .category-item {
+        padding: 12px 16px;
+        text-align: left;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+        color: #fff;
+        font-weight: 500;
+
+        &.active {
+            background-color: rgba($color: #fff, $alpha: 0.2);
+        }
+    }
 }

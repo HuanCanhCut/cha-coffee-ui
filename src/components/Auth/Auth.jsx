@@ -49,7 +49,7 @@ const Auth = ({ closeModal = () => {} }) => {
             if (response) {
                 dispatch(actions.currentUser(response.data))
                 localStorage.setItem('token', JSON.stringify(response.meta.token))
-                showToast({ message: 'Đăng kí tài khoản thành công.', type: 'success' })
+                showToast({ message: 'Đăng nhập thành công.', type: 'success' })
                 setTimeout(() => {
                     window.location.reload()
                 }, 1000)
@@ -59,6 +59,7 @@ const Auth = ({ closeModal = () => {} }) => {
             }
         } catch (error) {
             console.log(error)
+            setError('Đăng nhập thất bại, vui lòng liên hệ tronghuanxxx@gmail.com để được hỗ trợ!')
         }
     }
 
