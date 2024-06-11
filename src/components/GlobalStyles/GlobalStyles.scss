@@ -18,7 +18,7 @@
 // scroll bars
 html *::-webkit-scrollbar {
     border-radius: 0;
-    width: 6px;
+    width: 4px;
 }
 
 html {
@@ -27,12 +27,12 @@ html {
 
     ::-webkit-scrollbar-thumb {
         border-radius: 4px;
-        background-color: rgb(45, 241, 208);
+        background-color: rgb(0, 83, 102);
     }
 
     *::-webkit-scrollbar-track {
         border-radius: 0;
-        background-color: rgb(21, 141, 168) !important;
+        background-color: rgb(0, 146, 122) !important;
     }
 }
 
@@ -51,7 +51,7 @@ body {
     background-color: var(--default-layout-background);
 
     .tippy-box {
-        background-color: #6e6e6e;
+        background-color: #00656b;
         border-radius: 8px;
         font-weight: 500;
         padding: 2px 6px;
@@ -59,7 +59,7 @@ body {
         color: #fff;
     }
     .tippy-arrow {
-        color: #6e6e6e;
+        color: #00656b;
     }
 }
 

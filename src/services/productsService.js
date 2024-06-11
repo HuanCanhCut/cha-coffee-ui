@@ -20,3 +20,16 @@ export const deleteProduct = async ({ productID, accessToken }) => {
         showToast({ message: `Xóa sản phẩm thất bại. ${error?.response?.data?.message}`, type: 'error' })
     }
 }
+
+export const updateProduct = async ({ accessToken, productID, formData }) => {
+    try {
+        return await request.patch(`/products/${productID}`, formData, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        })
+    } catch (error) {
+        showToast({ message: `Cập nhật sản phẩm thất bại. ${error?.response?.data?.message}`, type: 'error' })
+        console.log(error)
+    }
+}

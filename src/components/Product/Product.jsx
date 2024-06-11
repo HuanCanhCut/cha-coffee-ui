@@ -5,12 +5,14 @@ import { useSelector } from 'react-redux'
 import { authCurrentUser } from '~/redux/selector'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faPlus } from '@fortawesome/free-solid-svg-icons'
+import Tippy from '@tippyjs/react'
 
 import * as productServices from '~/services/productsService'
 import Image from '../Image'
 import { Fire, Trash } from '../Icons'
 import { useCallback, useState } from 'react'
 import ConfirmModal from '../ConfirmModal'
+import EditProduct from '../EditProduct/EditProduct'
 import { showToast } from '~/project/services.'
 import { sendEvent } from '~/helpers/event'
 
@@ -26,12 +28,25 @@ const Product = ({ product }) => {
         title: '',
     })
 
+    const [Component, setComponent] = useState(ConfirmModal)
+
     const handleOpenModal = ({ type, title }) => {
         setOpenModal({
             isOpen: true,
             type,
             title,
         })
+
+        switch (type) {
+            case 'edit':
+                setComponent(EditProduct)
+                break
+            case 'delete':
+                setComponent(ConfirmModal)
+                break
+            default:
+                break
+        }
     }
 
     const handleCloseModal = useCallback(
@@ -42,6 +57,7 @@ const Product = ({ product }) => {
                 title: openModal.title,
             })
         },
+
         [openModal.title]
     )
 
@@ -54,7 +70,7 @@ const Product = ({ product }) => {
                     showToast({ message: 'Xoá sản phẩm thành công', type: 'success' })
 
                     sendEvent({
-                        eventName: 'product:delete-product',
+                        eventName: 'product:update-product',
                         detail: product,
                     })
                     sendEvent({ eventName: 'socket:send-notify', detail: `${product.name} đã bị xóa bởi quản lí.` })
@@ -72,8 +88,6 @@ const Product = ({ product }) => {
                 case 'delete':
                     handleDeleteProduct(product)
                     break
-                case 'edit':
-                    break
                 default:
                     break
             }
@@ -84,17 +98,20 @@ const Product = ({ product }) => {
     return (
         <div key={product.id} className={cx('product')}>
             <div className={cx('product-container-left')}>
-                <ConfirmModal
-                    isOpen={openModal.isOpen}
-                    onClose={handleCloseModal}
-                    title={openModal.title}
-                    onConfirm={() => {
-                        handleConfirm({
-                            type: openModal.type,
-                            product,
-                        })
-                    }}
-                />
+                {openModal.isOpen && (
+                    <Component
+                        isOpen={openModal.isOpen}
+                        onClose={handleCloseModal}
+                        title={openModal.title}
+                        onConfirm={() => {
+                            handleConfirm({
+                                type: openModal.type,
+                                product,
+                            })
+                        }}
+                        product={product}
+                    />
+                )}
                 <Image src={product.image} className={cx('image')} />
                 <div className={cx('info')}>
                     <div className={cx('info-container')}>
@@ -111,17 +128,29 @@ const Product = ({ product }) => {
                 <div className={cx('product-interaction')}>
                     {currentUser?.role === 'admin' && (
                         <>
-                            <button className={cx('edit-product')}>
-                                <FontAwesomeIcon icon={faPenToSquare} />
-                            </button>
-                            <button
-                                className={cx('delete-product')}
-                                onClick={() => {
-                                    handleOpenModal({ type: 'delete', title: 'Bạn có chắc muốn xóa sản phẩm này?' })
-                                }}
-                            >
-                                <Trash />
-                            </button>
+                            <Tippy content="Sửa thông tin sản phẩm" hideOnClick="false">
+                                <button
+                                    className={cx('edit-product')}
+                                    onClick={() => {
+                                        handleOpenModal({ type: 'edit', title: 'Sửa thông tin của sản phẩm' })
+                                    }}
+                                >
+                                    <FontAwesomeIcon icon={faPenToSquare} />
+                                </button>
+                            </Tippy>
+                            <Tippy content="Chuyển vào thùng rác" hideOnClick="false">
+                                <button
+                                    className={cx('delete-product')}
+                                    onClick={() => {
+                                        handleOpenModal({
+                                            type: 'delete',
+                                            title: 'Bạn có chắc muốn chuyển sản phẩm này vào thùng rác.',
+                                        })
+                                    }}
+                                >
+                                    <Trash />
+                                </button>
+                            </Tippy>
                         </>
                     )}
                 </div>

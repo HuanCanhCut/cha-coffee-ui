@@ -1,10 +1,11 @@
 import classNames from 'classnames/bind'
 import styles from './Products.module.scss'
 import Product from '~/components/Product'
+import { memo } from 'react'
 
 const cx = classNames.bind(styles)
 
-const Products = ({ products }) => {
+export default memo(function Products({ products }) {
     return (
         <div className={cx('wrapper')}>
             {Object.keys(products).map((category, index) => {
@@ -21,6 +22,4 @@ const Products = ({ products }) => {
             })}
         </div>
     )
-}
-
-export default Products
+})
