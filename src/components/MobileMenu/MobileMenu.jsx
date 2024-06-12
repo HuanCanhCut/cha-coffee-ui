@@ -10,7 +10,7 @@ import { authCurrentUser } from '~/redux/selector'
 
 const cx = classNames.bind(style)
 
-const MobileMenu = ({ isOpen, closeMenu = () => {} }) => {
+export default memo(function MobileMenu({ isOpen, closeMenu = () => {} }) {
     const currentUser = useSelector(authCurrentUser)
     return (
         <div
@@ -30,7 +30,4 @@ const MobileMenu = ({ isOpen, closeMenu = () => {} }) => {
             </header>
         </div>
     )
-}
-
-// eslint-disable-next-line react-refresh/only-export-components
-export default memo(MobileMenu)
+})

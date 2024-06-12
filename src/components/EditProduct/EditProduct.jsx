@@ -75,8 +75,6 @@ export default memo(function EditProduct({ isOpen, onClose = () => {}, title, pr
         },
     ]
 
-    console.log(fields)
-
     const tabs = useMemo(() => {
         return [
             {

@@ -104,9 +104,11 @@ const Header = () => {
                         </button>
                         {currentUser ? (
                             <>
-                                <Button outline className={cx('header-right-btn')}>
-                                    Cửa hàng
-                                </Button>
+                                <Link to={config.routes.store}>
+                                    <Button outline className={cx('header-right-btn')}>
+                                        Cửa hàng
+                                    </Button>
+                                </Link>
                                 <Button outline className={cx('header-right-btn')}>
                                     Đơn hàng
                                 </Button>
