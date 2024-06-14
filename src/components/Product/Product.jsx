@@ -10,15 +10,15 @@ import Tippy from '@tippyjs/react'
 import * as productServices from '~/services/productsService'
 import Image from '../Image'
 import { Fire, Trash } from '../Icons'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import ConfirmModal from '../ConfirmModal'
 import EditProduct from '../EditProduct/EditProduct'
 import { showToast } from '~/project/services.'
-import { sendEvent } from '~/helpers/event'
-
+import { listentEvent, sendEvent } from '~/helpers/event'
+import useElementOnScreen from '~/hooks/useElementOnScreen'
 const cx = classNames.bind(styles)
 
-const Product = ({ product }) => {
+const Product = ({ product, productIndex, productsLength }) => {
     const currentUser = useSelector(authCurrentUser)
     const accessToken = JSON.parse(localStorage.getItem('token'))
 
@@ -28,7 +28,32 @@ const Product = ({ product }) => {
         title: '',
     })
 
+    const secondProductRef = useRef(null)
+    const options = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 1,
+    }
+    const isVisible = useElementOnScreen(options, secondProductRef)
+
     const [Component, setComponent] = useState(ConfirmModal)
+
+    useEffect(() => {
+        if (isVisible) {
+            sendEvent({
+                eventName: 'product:category-visible',
+                detail: product.category,
+            })
+        }
+    }, [isVisible, product.category])
+
+    useEffect(() => {
+        const remove = listentEvent({
+            eventName: 'sidebar:select-category',
+            handler() {},
+        })
+        return remove
+    }, [])
 
     const handleOpenModal = ({ type, title }) => {
         setOpenModal({
@@ -96,7 +121,11 @@ const Product = ({ product }) => {
     )
 
     return (
-        <div key={product.id} className={cx('product')}>
+        <div
+            key={product.id}
+            className={cx('product')}
+            ref={productIndex == 1 || productIndex === productsLength - 3 ? secondProductRef : null}
+        >
             <div className={cx('product-container-left')}>
                 {openModal.isOpen && (
                     <Component

@@ -69,10 +69,10 @@ const Home = () => {
                 <div className={cx('grid')}>
                     <div className={cx('row')}>
                         <div className={cx('col', 'l-3', 'm-0', 'c-0')}>
-                            <Sidebar products={products} />
+                            {Object.keys(products).length > 0 && <Sidebar products={products} />}
                         </div>
                         <div className={cx('col', 'l-6', 'm-7', 'c-12')}>
-                            <Products products={products} />
+                            {Object.keys(products).length > 0 && <Products products={products} />}
                         </div>
                         <div className={cx('col', 'l-3', 'm-5', 'c-0')}></div>
                     </div>
