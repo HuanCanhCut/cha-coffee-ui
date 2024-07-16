@@ -3,23 +3,50 @@ import styles from './Header.module.scss'
 import logo from '~/assets/logo.svg'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faEarthAsia, faSearch, faSignOut, faUser } from '@fortawesome/free-solid-svg-icons'
 import ReactModal from 'react-modal'
 import { useCallback, useState } from 'react'
+import * as authServices from '~/services/authService'
 
+import Menu from '~/components/Popper/Menu'
 import Search from '~/components/Search'
 import config from '~/config'
 import Button from '~/components/Button'
 import Image from '~/components/Image'
 import Auth from '~/components/Auth'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { authCurrentUser } from '~/redux/selector'
 import MobileMenu from '~/components/MobileMenu'
 import MobileSearch from '~/pages/MobileSearch'
+import { actions } from '~/redux'
+
+const MENU_ITEM = [
+    {
+        icon: <FontAwesomeIcon icon={faEarthAsia} />,
+        title: 'Ngôn ngữ hiện tại',
+        children: {
+            title: 'Ngôn ngữ',
+            data: [
+                {
+                    type: 'lang',
+                    code: 'en',
+                    title: 'Tiếng anh',
+                },
+                {
+                    type: 'lang',
+                    code: 'vi',
+                    title: 'Tiếng việt',
+                },
+            ],
+        },
+    },
+]
 
 const cx = classNames.bind(styles)
 
 const Header = () => {
+    const dispatch = useDispatch()
+    const accessToken = JSON.parse(localStorage.getItem('token'))
     const currentUser = useSelector(authCurrentUser)
 
     const [openModal, setOpenModal] = useState({
@@ -34,6 +61,21 @@ const Header = () => {
             type,
         })
     }
+
+    const userMenu = [
+        {
+            icon: <FontAwesomeIcon icon={faUser} />,
+            title: 'Xem hồ sơ',
+        },
+
+        ...MENU_ITEM,
+        {
+            type: 'log-out',
+            icon: <FontAwesomeIcon icon={faSignOut} />,
+            title: 'Log out',
+            separate: true,
+        },
+    ]
 
     const handleCloseModal = useCallback((type) => {
         setOpenModal({
@@ -56,6 +98,32 @@ const Header = () => {
     const handleCloseMobileMenu = useCallback(() => {
         setMobileMenuOpen(false)
     }, [])
+
+    const handleLogout = useCallback(async () => {
+        const response = await authServices.logout({
+            accessToken,
+        })
+        if (response?.status === 200) {
+            localStorage.removeItem('token')
+            dispatch(actions.currentUser(null))
+            window.location.reload()
+        }
+    }, [accessToken, dispatch])
+
+    const handleMenuChange = useCallback(
+        (menuItem) => {
+            switch (menuItem.type) {
+                case 'lang':
+                    break
+                case 'log-out':
+                    handleLogout()
+                    break
+                default:
+                    break
+            }
+        },
+        [handleLogout]
+    )
 
     return (
         <header className={cx('wrapper', 'grid')}>
@@ -112,10 +180,12 @@ const Header = () => {
                                 <Button outline className={cx('header-right-btn')}>
                                     Đơn hàng
                                 </Button>
-                                <Image className={cx('avatar')} src={currentUser.avatar} />
+                                <Menu items={currentUser ? userMenu : MENU_ITEM} onChange={handleMenuChange}>
+                                    <Image className={cx('avatar')} src={currentUser.avatar} />
+                                </Menu>
                             </>
                         ) : (
-                            <>
+                            <div className={cx('login-btn')}>
                                 <Button
                                     primary
                                     onClick={() => {
@@ -124,7 +194,7 @@ const Header = () => {
                                 >
                                     Đăng nhập
                                 </Button>
-                            </>
+                            </div>
                         )}
                     </div>
                 </div>

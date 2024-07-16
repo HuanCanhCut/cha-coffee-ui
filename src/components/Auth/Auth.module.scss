@@ -18,7 +18,7 @@
         font-size: 2rem;
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-end;
 
         .welcome-container {
             height: 100%;
@@ -54,6 +54,20 @@
         gap: 10px;
         flex-direction: column;
         text-align: left;
+
+        .password-container {
+            position: relative;
+
+            .toggle-hide-password {
+                position: absolute;
+                color: var(--default-background-color-modal);
+                top: 50%;
+                right: 12px;
+                font-size: 1.4rem;
+                transform: translateY(-50%);
+                cursor: pointer;
+            }
+        }
 
         input {
             padding: 12px 8px;

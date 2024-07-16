@@ -15,6 +15,33 @@ export const login = async ({ email, password }) => {
     }
 }
 
+export const logout = async ({ accessToken }) => {
+    try {
+        return await request.post('auth/logout', [], {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const register = async ({ email, password, type = 'email' }) => {
+    try {
+        return await request.post('auth/register', {
+            type,
+            email,
+            password,
+        })
+    } catch (error) {
+        console.log(error)
+        if (error.response.status === 409) {
+            showToast({ message: 'Tài khoản đã tồn tại', type: 'error' })
+        }
+    }
+}
+
 export const getCurrentUser = async ({ accessToken }) => {
     try {
         return await request.get('auth/me', {

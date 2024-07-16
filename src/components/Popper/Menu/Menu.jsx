@@ -4,7 +4,7 @@ import Tippy from '@tippyjs/react/headless'
 import 'tippy.js/dist/tippy.css'
 import { useSpring, motion } from 'framer-motion'
 
-import { Wrapper as PopperWrapper } from '../Wrapper'
+import { Wrapper as PopperWrapper } from '../index'
 import Header from './Header'
 import MenuItem from './MenuItem'
 import { useState } from 'react'
@@ -16,7 +16,6 @@ const defaultFn = () => {}
 const Menu = ({ children, items = [], hideOnClick = false, onChange = defaultFn }) => {
     const [history, setHistory] = useState([{ data: items }])
 
-    // define config framer-motion
     const springConfig = { damping: 15, stiffness: 300 }
     const initialScale = 0.5
     const opacity = useSpring(springConfig)
@@ -92,19 +91,21 @@ const Menu = ({ children, items = [], hideOnClick = false, onChange = defaultFn 
     }
 
     return (
-        <Tippy
-            animation={true}
-            interactive
-            delay={[100, 400]}
-            offset={[8, 12]}
-            hideOnClick={hideOnClick}
-            placement="bottom-end"
-            render={renderResult}
-            onMount={onMount}
-            onHide={handleResetMenu}
-        >
-            {children}
-        </Tippy>
+        <div>
+            <Tippy
+                animation={true}
+                interactive
+                delay={[100, 400]}
+                offset={[8, 12]}
+                hideOnClick={hideOnClick}
+                placement="bottom-end"
+                render={renderResult}
+                onMount={onMount}
+                onHide={handleResetMenu}
+            >
+                {children}
+            </Tippy>
+        </div>
     )
 }
 

@@ -50,8 +50,16 @@ const Home = () => {
                 const response = await productServices.getProducts()
 
                 if (response) {
+                    const groupProducts = response.reduce((acc, cur) => {
+                        if (!acc[cur.category]) {
+                            acc[cur.category] = []
+                        }
+                        acc[cur.category].push(cur)
+                        return acc
+                    }, {})
+
                     setProducts((prev) => {
-                        return { ...prev, ...response.data }
+                        return { ...prev, ...groupProducts }
                     })
                 }
             } catch (error) {
