@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faEarthAsia, faSearch, faSignOut, faUser } from '@fortawesome/free-solid-svg-icons'
 import ReactModal from 'react-modal'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import * as authServices from '~/services/authService'
 
 import Menu from '~/components/Popper/Menu'
@@ -91,6 +91,17 @@ const Header = () => {
         }
     }, [])
 
+    // When the mobile menu is open, body scrolling is not allowed
+    useEffect(() => {
+        const body = document.querySelector('body')
+
+        if (mobileMenuOpen) {
+            body.style.overflow = 'hidden'
+        } else {
+            body.style.overflow = 'unset'
+        }
+    }, [mobileMenuOpen])
+
     const handleOpenMobileMenu = () => {
         setMobileMenuOpen(true)
     }
@@ -156,11 +167,11 @@ const Header = () => {
                     </Link>
                 </div>
 
-                <div className={cx('col', 'l-4', 'm-5', 'c-0')}>
+                <div className={cx('col', 'l-4', 'm-4', 'c-0')}>
                     <Search />
                 </div>
 
-                <div className={cx('header-right', 'col', 'l-4', 'm-5', 'c-10')}>
+                <div className={cx('header-right', 'col', 'l-4', 'm-6', 'c-10')}>
                     <div className={cx('row', 'header-right-row')}>
                         <button
                             className={cx('search-btn', 'l-0', 'm-0', ' c-1')}

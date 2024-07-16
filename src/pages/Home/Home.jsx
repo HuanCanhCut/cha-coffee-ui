@@ -2,6 +2,7 @@ import classNames from 'classnames/bind'
 import styles from './Home.module.scss'
 import { useEffect, useRef, useState, createContext } from 'react'
 import socketIOClient from 'socket.io-client'
+import { groupProductByCategory } from '~/project/services.'
 
 import Header from '~/layouts/Header'
 import Sidebar from '~/layouts/SideBar/Sidebar'
@@ -22,7 +23,8 @@ const Home = () => {
         socketRef.current = socketIOClient.connect(import.meta.env.VITE_APP_SERVER_URL)
 
         socketRef.current.on('new-products', (newProducts) => {
-            setProducts({ ...newProducts.data })
+            const groupProducts = groupProductByCategory(newProducts.data)
+            setProducts({ ...groupProducts })
         })
 
         return () => {
@@ -50,13 +52,7 @@ const Home = () => {
                 const response = await productServices.getProducts()
 
                 if (response) {
-                    const groupProducts = response.reduce((acc, cur) => {
-                        if (!acc[cur.category]) {
-                            acc[cur.category] = []
-                        }
-                        acc[cur.category].push(cur)
-                        return acc
-                    }, {})
+                    const groupProducts = groupProductByCategory(response.data)
 
                     setProducts((prev) => {
                         return { ...prev, ...groupProducts }

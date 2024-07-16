@@ -13,3 +13,15 @@ export const showToast = ({ message, type = 'success', duration = 3500 }) => {
         theme: 'dark',
     })
 }
+
+export const groupProductByCategory = (products) => {
+    const groupProducts = products.reduce((acc, cur) => {
+        if (!acc[cur.category]) {
+            acc[cur.category] = []
+        }
+        acc[cur.category].push(cur)
+        return acc
+    }, {})
+
+    return groupProducts
+}
