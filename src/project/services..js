@@ -1,5 +1,6 @@
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import numeral from 'numeral'
 
 export const showToast = ({ message, type = 'success', duration = 3500 }) => {
     return toast[type](message, {
@@ -24,4 +25,8 @@ export const groupProductByCategory = (products) => {
     }, {})
 
     return groupProducts
+}
+
+export const formatPrice = (price) => {
+    return numeral(price).format('0,0').replace(/,/g, '.')
 }

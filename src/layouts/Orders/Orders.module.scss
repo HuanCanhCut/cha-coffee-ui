@@ -1,0 +1,132 @@
+.wrapper {
+    padding: 0 16px;
+    margin-top: 40px;
+    position: fixed;
+    width: calc(25% - 20px);
+}
+
+.selected-product {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-all {
+    white-space: nowrap;
+    margin: 0 !important;
+}
+
+.products-container {
+    padding: 8px 0px;
+    margin-top: 12px;
+
+    .product + .product {
+        margin-top: 12px;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .interaction {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            .add-note {
+                font-size: 1.5rem;
+            }
+
+            > * {
+                cursor: pointer;
+            }
+        }
+    }
+
+    .bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+
+        .quantity-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .subtract,
+        .quantity,
+        .add {
+            cursor: pointer;
+            border: 1px solid #00b3bd;
+        }
+
+        .quantity {
+            height: 20px;
+            padding: 0 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fffd3c;
+            font-size: 1.4rem;
+        }
+
+        .subtract,
+        .add {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+        }
+
+        .price {
+            font-size: 1.4rem;
+            color: #fffd3c;
+            font-weight: 500;
+        }
+    }
+}
+
+.order-btn {
+    width: 100%;
+    margin-top: 8px;
+    padding: 12px 0 !important;
+}
+
+.no-product-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border: 2px solid #00b3bd;
+    border-radius: 17px;
+    box-shadow: 5px 5px 10px #00757b, -5px -5px 10px #006c7200;
+    margin-top: 24px;
+    padding: 16px;
+
+    .cart-icon {
+        font-size: 10rem;
+        color: #fff;
+    }
+
+    .no-product-title {
+        font-weight: 500;
+        font-size: 2.2rem;
+    }
+}
+
+@media (min-width: 740px) and (max-width: 1023px) {
+    .wrapper {
+        width: calc(40% - 20px);
+    }
+}
+
+@media (max-width: 1113px) {
+    .wrapper {
+        width: calc(42% - 20px);
+    }
+}

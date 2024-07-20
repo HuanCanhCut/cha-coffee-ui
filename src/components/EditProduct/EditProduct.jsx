@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind'
 import style from './EditProduct.module.scss'
 import ReactModal from 'react-modal'
-import { memo, useContext, useMemo, useReducer, useState } from 'react'
+import { memo, useContext, useMemo, useReducer, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faXmark } from '@fortawesome/free-solid-svg-icons'
 import * as productServices from '~/services/productsService'
@@ -88,6 +88,8 @@ export default memo(function EditProduct({ isOpen, onClose = () => {}, title, pr
         ]
     }, [])
 
+    const submitButtonRef = useRef(null)
+
     const [fieldValue, dispatch] = useReducer(reducer, fields)
     const [currentTab, setCurrentTab] = useState(tabs[0].type)
     const [currentCategory, setCurrentCategory] = useState(product.category)
@@ -114,6 +116,10 @@ export default memo(function EditProduct({ isOpen, onClose = () => {}, title, pr
     }
 
     const handleUpdate = async (productID) => {
+        if (submitButtonRef.current) {
+            submitButtonRef.current.disabled = true
+        }
+
         const formData = new FormData()
 
         let name, description, price
@@ -161,6 +167,10 @@ export default memo(function EditProduct({ isOpen, onClose = () => {}, title, pr
             }
         } catch (error) {
             console.log(error)
+        } finally {
+            if (submitButtonRef.current) {
+                submitButtonRef.current.disabled = false
+            }
         }
     }
 
@@ -191,7 +201,7 @@ export default memo(function EditProduct({ isOpen, onClose = () => {}, title, pr
                             <label htmlFor="change-image" className={cx('change-image')}>
                                 <FontAwesomeIcon icon={faPenToSquare} />
                             </label>
-                            <input type="file" onChange={handleChangeImage} id="change-image" hidden />
+                            <input type="file" onChange={handleChangeImage} id="change-image" hidden accept="image/*" />
                         </div>
                     </main>
                     <main className={cx('field-container')}>
@@ -273,6 +283,7 @@ export default memo(function EditProduct({ isOpen, onClose = () => {}, title, pr
                         </div>
 
                         <Button
+                            ref={submitButtonRef}
                             className={cx('update')}
                             primary
                             onClick={() => {

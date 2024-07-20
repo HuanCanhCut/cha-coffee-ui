@@ -17,6 +17,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
+    line-clamp: 1;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
 }
@@ -47,6 +48,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
+    line-clamp: 1;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
 }
@@ -110,6 +112,12 @@
             color: var(--text-color);
         }
     }
+}
+
+.change-quantity {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 @media (max-width: 550px) {

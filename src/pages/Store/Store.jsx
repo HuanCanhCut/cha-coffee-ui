@@ -89,7 +89,7 @@ export default memo(function Store() {
                         <div className="col l-10 m-9 c-12">
                             <input
                                 type="text"
-                                value={address?.lat + ',' + address?.lng}
+                                value={address && address?.lat + ',' + address?.lng}
                                 onChange={handleChangeAddress}
                                 className={cx('location-input')}
                                 placeholder="Nhập địa chỉ nhận hàng"

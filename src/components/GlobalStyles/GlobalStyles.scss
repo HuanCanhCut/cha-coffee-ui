@@ -24,6 +24,7 @@ html *::-webkit-scrollbar {
 html {
     font-size: 62.5%;
     scroll-behavior: smooth;
+    overflow-x: hidden;
 
     ::-webkit-scrollbar-thumb {
         border-radius: 4px;

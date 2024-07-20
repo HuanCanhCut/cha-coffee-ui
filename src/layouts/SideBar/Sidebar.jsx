@@ -31,7 +31,7 @@ const Sidebar = ({ products }) => {
 
     return (
         <aside className={cx('wrapper')}>
-            <h2>Thực đơn</h2>
+            <h2 className={cx('title')}>Thực đơn</h2>
             <div className={cx('categories-wrapper')}>
                 {categories.map((category) => (
                     <button

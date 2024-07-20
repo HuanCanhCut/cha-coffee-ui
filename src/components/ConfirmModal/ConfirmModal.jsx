@@ -19,7 +19,7 @@ export default memo(function ConfirmModal({ isOpen, onClose = () => {}, title, o
         >
             <PopperWrapper className={cx('popper-wrapper')}>
                 <div className={cx('wrapper')}>
-                    <h2>{title}</h2>
+                    <h2 className={cx('title')}>{title}</h2>
                     <div className={cx('actions')}>
                         <Button outline onClick={onClose}>
                             Hủy

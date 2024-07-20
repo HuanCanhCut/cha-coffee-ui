@@ -157,7 +157,7 @@ const Auth = ({ closeModal = () => {} }) => {
                     </button>
                 </header>
                 <main className={cx('body')}>
-                    <h3 className={cx('title')}>{type === 'login' ? 'Đăng nhập' : 'Đăng kí'} chà cà phê</h3>
+                    <h3 className={cx('title')}>{type === 'login' ? 'Đăng nhập' : 'Đăng kí'} ch à cà phê</h3>
                     <div className={cx('input-group')}>
                         <input
                             ref={emailRef}

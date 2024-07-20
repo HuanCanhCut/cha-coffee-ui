@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, createContext } from 'react'
 import socketIOClient from 'socket.io-client'
 import { groupProductByCategory } from '~/project/services.'
 
+import Orders from '~/layouts/Orders'
 import Header from '~/layouts/Header'
 import Sidebar from '~/layouts/SideBar/Sidebar'
 import * as productServices from '~/services/productsService'
@@ -78,7 +79,9 @@ const Home = () => {
                         <div className={cx('col', 'l-6', 'm-7', 'c-12')}>
                             {Object.keys(products).length > 0 && <Products products={products} />}
                         </div>
-                        <div className={cx('col', 'l-3', 'm-5', 'c-0')}></div>
+                        <div className={cx('col', 'l-3', 'm-5', 'c-0')}>
+                            <Orders />
+                        </div>
                     </div>
                 </div>
             </div>
