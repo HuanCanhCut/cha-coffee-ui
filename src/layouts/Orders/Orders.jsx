@@ -1,15 +1,17 @@
 import classNames from 'classnames/bind'
 import style from './Orders.module.scss'
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { listentEvent } from '~/helpers/event'
-
-import { CartIcon, Trash } from '~/components/Icons'
-import Button from '~/components/Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'
+import { useDispatch, useSelector } from 'react-redux'
+import ReactModal from 'react-modal'
+
+import AddNote from './AddNote'
+import { CartIcon, Trash } from '~/components/Icons'
+import Button from '~/components/Button'
 import ConfirmModal from '~/components/ConfirmModal'
 import { formatPrice } from '~/project/services.'
-import { useDispatch, useSelector } from 'react-redux'
 import { getProductsInCart } from '~/redux/selector'
 import { actions } from '~/redux'
 
@@ -19,6 +21,11 @@ export default memo(function Orders() {
     const dispatch = useDispatch()
     const products = useSelector(getProductsInCart)
     const [isOpen, setIsOpen] = useState(false)
+    const [addNoteModal, setAddNoteModal] = useState(false)
+    const [productNoteIndex, setProductNoteIndex] = useState()
+
+    const productContainerRef = useRef(null)
+    const productRef = useRef(null)
 
     const handleAddToCart = useCallback(
         (product) => {
@@ -74,6 +81,16 @@ export default memo(function Orders() {
         handleRemoveToCart(product)
     }
 
+    const handleOpenAddNote = (product) => {
+        const index = products.findIndex((item) => item._id === product._id)
+        setProductNoteIndex(index)
+        setAddNoteModal(true)
+    }
+
+    const handleCloseAddNote = useCallback(() => {
+        setAddNoteModal(false)
+    }, [])
+
     return (
         <div className={cx('wrapper')}>
             <ConfirmModal
@@ -82,6 +99,17 @@ export default memo(function Orders() {
                 onConfirm={handleDeleteAllProduct}
                 title="Bạn có muốn xóa tất cả sản phẩm đã chọn?"
             />
+
+            <ReactModal
+                isOpen={addNoteModal}
+                onRequestClose={() => setAddNoteModal(false)}
+                className={cx('modal')}
+                overlayClassName={cx('overlay')}
+                ariaHideApp={false}
+                closeTimeoutMS={200}
+            >
+                <AddNote productIndex={productNoteIndex} onClose={handleCloseAddNote} products={products} />
+            </ReactModal>
             {products.length > 0 ? (
                 <>
                     <div className={cx('selected-product')}>
@@ -90,13 +118,20 @@ export default memo(function Orders() {
                             Xóa tất cả
                         </Button>
                     </div>
-                    <div className={cx('products-container')}>
+                    <div ref={productContainerRef} className={cx('products-container')}>
                         {products.map((product, index) => (
-                            <div className={cx('product')} key={index}>
+                            <div ref={productRef} className={cx('product')} key={index}>
                                 <div className={cx('header')}>
-                                    <p>{product.name}</p>
+                                    <p className={cx('product-name')}>{product.name}</p>
                                     <div className={cx('interaction')}>
-                                        <FontAwesomeIcon icon={faPenToSquare} className={cx('add-note')} />
+                                        <button
+                                            className={cx('add-note-btn')}
+                                            onClick={() => {
+                                                handleOpenAddNote(product)
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon={faPenToSquare} />
+                                        </button>
                                         <Trash
                                             width="18"
                                             height="18"

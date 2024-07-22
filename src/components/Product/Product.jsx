@@ -3,7 +3,7 @@ import styles from './Product.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { authCurrentUser, getProductsInCart } from '~/redux/selector'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMinus, faPenToSquare, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faPenToSquare, faPlus } from '@fortawesome/free-solid-svg-icons'
 import Tippy from '@tippyjs/react'
 import { motion } from 'framer-motion'
 
@@ -18,6 +18,7 @@ import { showToast } from '~/project/services.'
 import { listentEvent, sendEvent } from '~/helpers/event'
 import useElementOnScreen from '~/hooks/useElementOnScreen'
 import { actions } from '~/redux'
+import ChangeQuantity from '../ChangeQuantity'
 const cx = classNames.bind(styles)
 
 const Product = ({ product, productIndex, productsLength, addProductToCart }) => {
@@ -29,7 +30,13 @@ const Product = ({ product, productIndex, productsLength, addProductToCart }) =>
     const secondProductRef = useRef(null)
     const quantityRef = useRef(null)
 
-    const [isProductInCart, setIsProductInCart] = useState(false)
+    const [isProductInCart, setIsProductInCart] = useState(() => {
+        for (let i = 0; i < productsInCart.length; i++) {
+            if (productsInCart[i]._id === product._id) {
+                return true
+            }
+        }
+    })
 
     const options = {
         root: null,
@@ -61,7 +68,7 @@ const Product = ({ product, productIndex, productsLength, addProductToCart }) =>
         if (!available) {
             setIsProductInCart(false)
         }
-    }, [product._id, productIndex, productsInCart])
+    }, [product._id, productsInCart])
 
     useEffect(() => {
         if (isVisible) {
@@ -236,23 +243,7 @@ const Product = ({ product, productIndex, productsLength, addProductToCart }) =>
                         <FontAwesomeIcon icon={faPlus} />
                     </motion.button>
                 ) : (
-                    <div className={cx('change-quantity')}>
-                        <motion.button
-                            className={cx('add-to-cart')}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => handleChangeQuantity('sub')}
-                        >
-                            <FontAwesomeIcon icon={faMinus} />
-                        </motion.button>
-                        <div ref={quantityRef} className={cx('quantity')}></div>
-                        <motion.button
-                            className={cx('add-to-cart')}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => handleChangeQuantity('add')}
-                        >
-                            <FontAwesomeIcon icon={faPlus} />
-                        </motion.button>
-                    </div>
+                    <ChangeQuantity handleChange={handleChangeQuantity} ref={quantityRef} />
                 )}
             </div>
         </motion.div>

@@ -12,6 +12,7 @@ const cartReducer = (state = initialState, action) => {
                     newProducts[index] = {
                         ...newProducts[index],
                         quantity: (newProducts[index].quantity || 1) + 1,
+                        note: action.payload.note || '',
                     }
                     return {
                         ...state,
@@ -35,6 +36,7 @@ const cartReducer = (state = initialState, action) => {
                         newProducts[index] = {
                             ...newProducts[index],
                             quantity: newProducts[index].quantity - 1,
+                            note: action.payload.note || '',
                         }
                     }
                     return {
