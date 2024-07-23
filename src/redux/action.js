@@ -32,3 +32,10 @@ export const clearCart = (payload) => {
         payload,
     }
 }
+
+export const addNoteOrder = (payload) => {
+    return {
+        type: 'add-note',
+        payload,
+    }
+}

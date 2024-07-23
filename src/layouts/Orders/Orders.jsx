@@ -122,7 +122,10 @@ export default memo(function Orders() {
                         {products.map((product, index) => (
                             <div ref={productRef} className={cx('product')} key={index}>
                                 <div className={cx('header')}>
-                                    <p className={cx('product-name')}>{product.name}</p>
+                                    <div className={cx('product-info')}>
+                                        <p className={cx('product-name')}>{product.name}</p>
+                                        <p className={cx('product-note')}>{product.note}</p>
+                                    </div>
                                     <div className={cx('interaction')}>
                                         <button
                                             className={cx('add-note-btn')}

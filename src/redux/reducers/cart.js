@@ -11,7 +11,7 @@ const cartReducer = (state = initialState, action) => {
                     const newProducts = [...action.payload.products]
                     newProducts[index] = {
                         ...newProducts[index],
-                        quantity: (newProducts[index].quantity || 1) + 1,
+                        quantity: action.payload.quantity || (newProducts[index].quantity || 1) + 1,
                         note: action.payload.note || '',
                     }
                     return {
@@ -35,7 +35,7 @@ const cartReducer = (state = initialState, action) => {
                     } else {
                         newProducts[index] = {
                             ...newProducts[index],
-                            quantity: newProducts[index].quantity - 1,
+                            quantity: action.payload.quantity || newProducts[index].quantity - 1,
                             note: action.payload.note || '',
                         }
                     }
@@ -55,6 +55,19 @@ const cartReducer = (state = initialState, action) => {
             return {
                 ...state,
                 products: action.payload || [],
+            }
+        case 'add-note':
+            return {
+                ...state,
+                products: state.products.map((item) => {
+                    if (item._id === action.payload.product._id) {
+                        return {
+                            ...item,
+                            note: action.payload.note,
+                        }
+                    }
+                    return item
+                }),
             }
         default:
             return state
