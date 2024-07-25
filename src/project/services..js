@@ -1,6 +1,7 @@
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import numeral from 'numeral'
+import { actions } from '~/redux'
 
 export const showToast = ({ message, type = 'success', duration = 3500 }) => {
     return toast[type](message, {
@@ -29,4 +30,21 @@ export const groupProductByCategory = (products) => {
 
 export const formatPrice = (price) => {
     return numeral(price).format('0,0').replace(/,/g, '.')
+}
+
+export const removeProductFromCart = ({ dispatch, product, products }) => {
+    dispatch(
+        actions.removeAProductFromCart({
+            product,
+            products,
+        })
+    )
+}
+
+export const incrementQuantity = ({ dispatch, product, products }) => {
+    dispatch(actions.addProductsToCart({ product, products }))
+}
+
+export const decrementQuantity = ({ dispatch, product, products }) => {
+    dispatch(actions.subProductsToCart({ product, products }))
 }

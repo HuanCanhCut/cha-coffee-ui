@@ -1,19 +1,20 @@
 import classNames from 'classnames/bind'
 import style from './Orders.module.scss'
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { listentEvent } from '~/helpers/event'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
 import ReactModal from 'react-modal'
 
 import AddNote from './AddNote'
-import { CartIcon, Trash } from '~/components/Icons'
+import { CartIcon } from '~/components/Icons'
 import Button from '~/components/Button'
 import ConfirmModal from '~/components/ConfirmModal'
-import { formatPrice } from '~/project/services.'
+import { decrementQuantity, formatPrice, incrementQuantity, removeProductFromCart } from '~/project/services.'
 import { getProductsInCart } from '~/redux/selector'
 import { actions } from '~/redux'
+import { Link } from 'react-router-dom'
+import config from '~/config'
+import OrderItem from '~/components/OrderItem'
 
 const cx = classNames.bind(style)
 
@@ -25,18 +26,16 @@ export default memo(function Orders() {
     const [productNoteIndex, setProductNoteIndex] = useState()
 
     const productContainerRef = useRef(null)
-    const productRef = useRef(null)
 
-    const handleAddToCart = useCallback(
-        (product) => {
-            dispatch(actions.addProductsToCart({ product, products }))
-        },
-        [dispatch, products]
-    )
+    const totalPrice = useMemo(() => {
+        return products.reduce((acc, cur) => {
+            return acc + cur.price * cur.quantity
+        }, 0)
+    }, [products])
 
-    const handleRemoveToCart = useCallback(
+    const handleIncrementQuantity = useCallback(
         (product) => {
-            dispatch(actions.subProductsToCart({ product, products }))
+            incrementQuantity({ dispatch, product, products })
         },
         [dispatch, products]
     )
@@ -45,11 +44,11 @@ export default memo(function Orders() {
         const remove = listentEvent({
             eventName: 'product:add-to-cart',
             handler: ({ detail: product }) => {
-                handleAddToCart(product)
+                handleIncrementQuantity(product)
             },
         })
         return remove
-    }, [handleAddToCart, products])
+    }, [handleIncrementQuantity, products])
 
     const handleOpenModal = () => {
         setIsOpen(true)
@@ -64,28 +63,28 @@ export default memo(function Orders() {
         handleCloseModal()
     }, [dispatch, handleCloseModal])
 
-    const handleRemoveProduct = (product) => {
-        dispatch(
-            actions.removeAProductFromCart({
-                product,
-                products,
-            })
-        )
-    }
+    const handleRemoveProduct = useCallback(
+        (product) => {
+            removeProductFromCart({ dispatch, product, products })
+        },
+        [dispatch, products]
+    )
 
-    const handleIncrementQuantity = (product) => {
-        handleAddToCart(product)
-    }
+    const handleDecrementQuantity = useCallback(
+        (product) => {
+            decrementQuantity({ dispatch, product, products })
+        },
+        [dispatch, products]
+    )
 
-    const handleDecrementQuantity = (product) => {
-        handleRemoveToCart(product)
-    }
-
-    const handleOpenAddNote = (product) => {
-        const index = products.findIndex((item) => item._id === product._id)
-        setProductNoteIndex(index)
-        setAddNoteModal(true)
-    }
+    const handleOpenAddNote = useCallback(
+        (product) => {
+            const index = products.findIndex((item) => item._id === product._id)
+            setProductNoteIndex(index)
+            setAddNoteModal(true)
+        },
+        [products]
+    )
 
     const handleCloseAddNote = useCallback(() => {
         setAddNoteModal(false)
@@ -120,58 +119,28 @@ export default memo(function Orders() {
                     </div>
                     <div ref={productContainerRef} className={cx('products-container')}>
                         {products.map((product, index) => (
-                            <div ref={productRef} className={cx('product')} key={index}>
-                                <div className={cx('header')}>
-                                    <div className={cx('product-info')}>
-                                        <p className={cx('product-name')}>{product.name}</p>
-                                        <p className={cx('product-note')}>{product.note}</p>
-                                    </div>
-                                    <div className={cx('interaction')}>
-                                        <button
-                                            className={cx('add-note-btn')}
-                                            onClick={() => {
-                                                handleOpenAddNote(product)
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={faPenToSquare} />
-                                        </button>
-                                        <Trash
-                                            width="18"
-                                            height="18"
-                                            onClick={() => {
-                                                handleRemoveProduct(product)
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                                <div className={cx('bottom')}>
-                                    <div className={cx('quantity-container')}>
-                                        <div
-                                            className={cx('subtract')}
-                                            onClick={() => {
-                                                handleDecrementQuantity(product)
-                                            }}
-                                        >
-                                            <span>-</span>
-                                        </div>
-                                        <div className={cx('quantity')}>{product.quantity}</div>
-                                        <div
-                                            className={cx('add')}
-                                            onClick={() => {
-                                                handleIncrementQuantity(product)
-                                            }}
-                                        >
-                                            <span>+</span>
-                                        </div>
-                                    </div>
-                                    <div className={cx('price')}>{formatPrice(product.price * product.quantity)}</div>
-                                </div>
-                            </div>
+                            <React.Fragment key={index}>
+                                <OrderItem
+                                    product={product}
+                                    handleRemoveProduct={handleRemoveProduct}
+                                    handleDecrementQuantity={handleDecrementQuantity}
+                                    handleIncrementQuantity={handleIncrementQuantity}
+                                    handleOpenAddNote={handleOpenAddNote}
+                                />
+                            </React.Fragment>
                         ))}
                     </div>
-                    <Button primary className={cx('order-btn')}>
-                        Thanh toán
-                    </Button>
+                    <div className={cx('into-money-container')}>
+                        <p className={cx('into-money')}>
+                            <span>Thành tiền {products.length} sản phẩm: </span>
+                            <span className={cx('into-money-price')}>{formatPrice(totalPrice)}</span>
+                        </p>
+                        <Link to={config.routes.order} className={cx('order-btn-container')}>
+                            <Button primary className={cx('order-btn')}>
+                                Thanh toán
+                            </Button>
+                        </Link>
+                    </div>
                 </>
             ) : (
                 <div className={cx('no-product-container')}>
