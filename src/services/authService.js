@@ -53,3 +53,23 @@ export const getCurrentUser = async ({ accessToken }) => {
         console.log(error)
     }
 }
+
+export const updateCurrentUser = async ({ accessToken, userName, phone_number, address }) => {
+    try {
+        return await request.patch(
+            'auth/me',
+            {
+                user_name: userName,
+                phone_number,
+                address,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        )
+    } catch (error) {
+        console.log(error)
+    }
+}

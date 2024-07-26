@@ -49,7 +49,7 @@ function App() {
                 const response = await authServices.getCurrentUser({ accessToken })
 
                 if (response) {
-                    dispatch(actions.currentUser(response.data))
+                    dispatch(actions.currentUser(response.data.data))
                 } else {
                     dispatch(actions.currentUser(null))
                     localStorage.removeItem('token')

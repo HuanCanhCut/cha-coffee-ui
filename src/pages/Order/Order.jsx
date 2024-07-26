@@ -16,6 +16,7 @@ import ReactModal from 'react-modal'
 import AddNote from '~/layouts/Orders/AddNote'
 import { Link } from 'react-router-dom'
 import config from '~/config'
+import EditProfile from './components/EditProfile'
 
 const cx = classNames.bind(styles)
 
@@ -27,6 +28,11 @@ const Order = () => {
     const [store, setStore] = useState()
     const [addNoteModal, setAddNoteModal] = useState(false)
     const [productNoteIndex, setProductNoteIndex] = useState()
+    const [isOpen, setIsOpen] = useState({
+        type: '',
+        isOpen: false,
+        component: null,
+    })
 
     const tabs = useMemo(() => {
         return [
@@ -51,7 +57,7 @@ const Order = () => {
         const getStore = async () => {
             const response = await storeServices.getStores()
 
-            setStore(...response.data)
+            setStore(...response.data.data)
         }
 
         getStore()
@@ -91,6 +97,18 @@ const Order = () => {
         setAddNoteModal(false)
     }, [])
 
+    const handleClose = () => {
+        setIsOpen({ ...isOpen, isOpen: false })
+    }
+
+    const handleOpenModal = (type) => {
+        setIsOpen({
+            type,
+            isOpen: true,
+            component: <EditProfile onClose={handleClose} />,
+        })
+    }
+
     return (
         <div className={cx('wrapper')}>
             <ReactModal
@@ -102,6 +120,17 @@ const Order = () => {
                 closeTimeoutMS={200}
             >
                 <AddNote productIndex={productNoteIndex} onClose={handleCloseAddNote} products={productsInCart} />
+            </ReactModal>
+
+            <ReactModal
+                isOpen={isOpen.isOpen}
+                onRequestClose={handleClose}
+                className={cx('modal')}
+                overlayClassName={cx('overlay')}
+                ariaHideApp={false}
+                closeTimeoutMS={200}
+            >
+                {isOpen.component}
             </ReactModal>
             <div className="grid wide">
                 <div className="row">
@@ -138,7 +167,14 @@ const Order = () => {
 
                                                 <p className={cx('edit-container')}>
                                                     <span className={cx('content')}>Thông tin khách hàng:</span>
-                                                    <span className={cx('edit')}>Sửa</span>
+                                                    <span
+                                                        className={cx('edit')}
+                                                        onClick={() => {
+                                                            handleOpenModal('user-info')
+                                                        }}
+                                                    >
+                                                        Sửa
+                                                    </span>
                                                 </p>
                                             </PopperWrapper>
 
@@ -194,10 +230,12 @@ const Order = () => {
                                 <span>Tổng tiền {productsInCart.length} phần</span>
                                 <span className={cx('price')}>{formatPrice(totalPrice)}đ</span>
                             </div>
-                            <div className={cx('transport-fee')}>
-                                <span>Phí vận chuyển</span>
-                                <span className={cx('price')}>0đ</span>
-                            </div>
+                            {currentTab !== 'come' && (
+                                <div className={cx('transport-fee')}>
+                                    <span>Phí vận chuyển</span>
+                                    <span className={cx('price')}>0đ</span>
+                                </div>
+                            )}
                             <div className={cx('total-price')}>
                                 <span>Tiền phải thanh toán</span>
                                 <span className={cx('price')}>{formatPrice(totalPrice)}đ</span>

@@ -41,7 +41,7 @@ export default memo(function Store() {
             try {
                 const response = await storesServices.getStores()
 
-                setStores(response.data)
+                setStores(response.data.data)
             } catch (error) {
                 console.log(error)
             }

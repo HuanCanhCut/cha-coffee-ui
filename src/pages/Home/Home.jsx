@@ -53,7 +53,7 @@ const Home = () => {
                 const response = await productServices.getProducts()
 
                 if (response) {
-                    const groupProducts = groupProductByCategory(response.data)
+                    const groupProducts = groupProductByCategory(response.data.data)
 
                     setProducts((prev) => {
                         return { ...prev, ...groupProducts }

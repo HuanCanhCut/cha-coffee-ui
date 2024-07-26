@@ -89,7 +89,7 @@ const Auth = ({ closeModal = () => {} }) => {
             const response = await authServices.login(fields)
 
             if (response) {
-                dispatch(actions.currentUser(response.data))
+                dispatch(actions.currentUser(response.data.data))
                 localStorage.setItem('token', JSON.stringify(response.meta.token))
                 showToast({ message: 'Đăng nhập thành công.', type: 'success' })
                 setTimeout(() => {
@@ -106,7 +106,7 @@ const Auth = ({ closeModal = () => {} }) => {
                 const response = await authServices.register(fields)
 
                 if (response) {
-                    dispatch(actions.currentUser(response.data))
+                    dispatch(actions.currentUser(response.data.data))
                     localStorage.setItem('token', JSON.stringify(response.meta.token))
                     showToast({ message: 'Đăng ký tài khoản thành công.', type: 'success' })
                     setTimeout(() => {

@@ -1,0 +1,49 @@
+.wrapper {
+    padding: 24px 20px;
+    padding-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: min(600px, calc(100vw - 60px));
+
+    .title {
+        margin: 0 auto;
+        margin-bottom: 16px;
+    }
+
+    .close-container {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+
+        .close-icon {
+            padding: 4px;
+            cursor: pointer;
+            font-size: 2.8rem;
+        }
+    }
+}
+
+.input {
+    padding: 10px 8px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid cyan;
+    color: #fff;
+}
+
+.input + .input {
+    margin-top: 8px;
+}
+
+.error {
+    color: rgb(255, 86, 60);
+    font-size: 1.4rem;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+.save-btn {
+    margin-top: 16px;
+    padding: 12px 0;
+}

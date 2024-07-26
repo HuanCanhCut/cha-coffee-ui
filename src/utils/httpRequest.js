@@ -6,17 +6,17 @@ const request = axios.create({
 
 export const get = async (path, options = {}) => {
     const response = await request.get(path, options)
-    return response.data
+    return response
 }
 
 export const post = async (path, data, options = {}) => {
     const response = await request.post(path, data, options)
-    return response.data
+    return response
 }
 
 export const patch = async (path, data, options = {}) => {
     const response = await request.patch(path, data, options)
-    return response.data
+    return response
 }
 
 export const deleteMethod = async (path, options = {}) => {
