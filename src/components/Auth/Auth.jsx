@@ -90,7 +90,7 @@ const Auth = ({ closeModal = () => {} }) => {
 
             if (response) {
                 dispatch(actions.currentUser(response.data.data))
-                localStorage.setItem('token', JSON.stringify(response.meta.token))
+                localStorage.setItem('token', JSON.stringify(response.data.meta.token))
                 showToast({ message: 'Đăng nhập thành công.', type: 'success' })
                 setTimeout(() => {
                     window.location.reload()
@@ -157,7 +157,7 @@ const Auth = ({ closeModal = () => {} }) => {
                     </button>
                 </header>
                 <main className={cx('body')}>
-                    <h3 className={cx('title')}>{type === 'login' ? 'Đăng nhập' : 'Đăng kí'} ch à cà phê</h3>
+                    <h3 className={cx('title')}>{type === 'login' ? 'Đăng nhập' : 'Đăng kí'} chà cà phê</h3>
                     <div className={cx('input-group')}>
                         <input
                             ref={emailRef}

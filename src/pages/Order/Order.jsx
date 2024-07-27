@@ -3,20 +3,22 @@ import styles from './Order.module.scss'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import ReactModal from 'react-modal'
 
 import { Wrapper as PopperWrapper } from '~/components/Popper'
 import * as storeServices from '~/services/storeService'
 import Button from '~/components/Button'
 import { Voucher } from '~/components/Icons'
-import { useDispatch, useSelector } from 'react-redux'
 import { getProductsInCart } from '~/redux/selector'
 import OrderItem from '~/components/OrderItem'
 import { decrementQuantity, formatPrice, incrementQuantity, removeProductFromCart } from '~/project/services.'
-import ReactModal from 'react-modal'
 import AddNote from '~/layouts/Orders/AddNote'
-import { Link } from 'react-router-dom'
 import config from '~/config'
 import EditProfile from './components/EditProfile'
+import PayMethods from './components/PayMethods/PayMethods'
+import { listentEvent } from '~/helpers/event'
 
 const cx = classNames.bind(styles)
 
@@ -28,8 +30,8 @@ const Order = () => {
     const [store, setStore] = useState()
     const [addNoteModal, setAddNoteModal] = useState(false)
     const [productNoteIndex, setProductNoteIndex] = useState()
+    const [payMethod, setPayMethod] = useState('qrcode')
     const [isOpen, setIsOpen] = useState({
-        type: '',
         isOpen: false,
         component: null,
     })
@@ -45,6 +47,16 @@ const Order = () => {
                 title: 'Tự đến lấy',
             },
         ]
+    }, [])
+
+    useEffect(() => {
+        const remove = listentEvent({
+            eventName: 'order:change-pay-method',
+            handler: ({ detail: payMethod }) => {
+                setPayMethod(payMethod)
+            },
+        })
+        return remove
     }, [])
 
     const totalPrice = useMemo(() => {
@@ -97,15 +109,16 @@ const Order = () => {
         setAddNoteModal(false)
     }, [])
 
-    const handleClose = () => {
-        setIsOpen({ ...isOpen, isOpen: false })
-    }
+    const handleClose = useCallback(() => {
+        setIsOpen((prev) => {
+            return { ...prev, isOpen: false }
+        })
+    }, [])
 
-    const handleOpenModal = (type) => {
+    const handleOpenModal = (Component) => {
         setIsOpen({
-            type,
             isOpen: true,
-            component: <EditProfile onClose={handleClose} />,
+            component: <Component onClose={handleClose} payMethod={payMethod} />,
         })
     }
 
@@ -124,7 +137,9 @@ const Order = () => {
 
             <ReactModal
                 isOpen={isOpen.isOpen}
-                onRequestClose={handleClose}
+                onRequestClose={() => {
+                    handleClose()
+                }}
                 className={cx('modal')}
                 overlayClassName={cx('overlay')}
                 ariaHideApp={false}
@@ -170,7 +185,7 @@ const Order = () => {
                                                     <span
                                                         className={cx('edit')}
                                                         onClick={() => {
-                                                            handleOpenModal('user-info')
+                                                            handleOpenModal(EditProfile)
                                                         }}
                                                     >
                                                         Sửa
@@ -181,7 +196,15 @@ const Order = () => {
                                             <PopperWrapper className={cx('popper')}>
                                                 <p className={cx('edit-container')}>
                                                     <span className={cx('title')}>Phuơng thức thanh toán</span>
-                                                    <span className={cx('edit')}>Chọn</span>
+                                                    <span
+                                                        className={cx('edit')}
+                                                        onClick={() => {
+                                                            // handleOpenModal('payment', PayMethods)
+                                                            handleOpenModal(PayMethods)
+                                                        }}
+                                                    >
+                                                        Chọn
+                                                    </span>
                                                 </p>
                                                 <span className={cx('content')}>Chọn phương thức thanh toán</span>
                                             </PopperWrapper>

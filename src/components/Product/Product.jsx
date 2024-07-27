@@ -177,20 +177,18 @@ const Product = ({ product, productIndex, productsLength, addProductToCart }) =>
             ref={productIndex == 1 || productIndex === productsLength - 3 ? secondProductRef : null}
         >
             <div className={cx('product-container-left')}>
-                {openModal.isOpen && (
-                    <Component
-                        isOpen={openModal.isOpen}
-                        onClose={handleCloseModal}
-                        title={openModal.title}
-                        onConfirm={() => {
-                            handleConfirm({
-                                type: openModal.type,
-                                product,
-                            })
-                        }}
-                        product={product}
-                    />
-                )}
+                <Component
+                    isOpen={openModal.isOpen}
+                    onClose={handleCloseModal}
+                    title={openModal.title}
+                    onConfirm={() => {
+                        handleConfirm({
+                            type: openModal.type,
+                            product,
+                        })
+                    }}
+                    product={product}
+                />
                 <Image src={product.image} className={cx('image')} />
                 <div className={cx('info')}>
                     <div className={cx('info-container')}>

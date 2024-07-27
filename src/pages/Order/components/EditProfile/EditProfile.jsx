@@ -37,16 +37,19 @@ export default memo(function EditProfile({ onClose = () => {} }) {
 
         if (response.status === 200) {
             dispatch(actions.currentUser(response.data.data))
-            onClose()
+            onClose('user-info')
             showToast({ message: 'Cập nhật thành công' })
+            return
         }
+
+        showToast({ message: 'Cập nhật thất bại', type: 'error' })
     }
 
     return (
         <PopperWrapper>
             <form className={cx('wrapper')} onSubmit={handleSubmit(onSubmit)}>
                 <div className={cx('close-container')}>
-                    <FontAwesomeIcon icon={faXmark} className={cx('close-icon')} onClick={onClose} />
+                    <FontAwesomeIcon icon={faXmark} className={cx('close-icon')} onClick={() => onClose('user-info')} />
                 </div>
                 <h2 className={cx('title')}>Thay đổi thông tin của bạn</h2>
 
