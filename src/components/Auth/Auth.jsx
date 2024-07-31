@@ -1,14 +1,20 @@
 import classNames from 'classnames/bind'
 import styles from './Auth.module.scss'
 import { useEffect, useRef, useState } from 'react'
-import * as authServices from '~/services/authService'
 import { useDispatch } from 'react-redux'
-import { Wrapper as PopperWrapper } from '~/components/Popper'
-import Button from '../Button'
-import { showToast } from '~/project/services.'
-import { actions } from '~/redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { useForm } from 'react-hook-form'
+import config from '~/config'
+import { signInWithPopup } from 'firebase/auth'
+
+import * as authServices from '~/services/authService'
+import * as Popper from '~/components/Popper'
+import { showToast } from '~/project/services.'
+import { actions } from '~/redux'
+import Input from '../Input'
+import Button from '../Button'
+import { GoogleIcon } from '../Icons'
 
 const cx = classNames.bind(styles)
 
@@ -19,12 +25,15 @@ const Auth = ({ closeModal = () => {} }) => {
     const passwordRef = useRef()
     const inputsRef = useRef([emailRef, passwordRef])
 
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm()
+
     const [type, setType] = useState('login')
     const [error, setError] = useState('')
-    const [fields, setFields] = useState({
-        email: '',
-        password: '',
-    })
+
     const [inputFocusIndex, setInputFocusIndex] = useState(0)
     const [hidePassword, setHidePassword] = useState(true)
 
@@ -38,11 +47,6 @@ const Auth = ({ closeModal = () => {} }) => {
 
     const handleSwitchType = () => {
         setType(type === 'login' ? 'register' : 'login')
-    }
-
-    const setFieldsValue = ({ target: { name, value } }) => {
-        setError('')
-        setFields({ ...fields, [name]: value })
     }
 
     const handleKeyDown = (e) => {
@@ -65,37 +69,33 @@ const Auth = ({ closeModal = () => {} }) => {
                 })
                 break
             case 'Enter':
-                handleSubmit()
+                onSubmit()
                 break
             default:
                 break
         }
     }
 
-    const handleSubmit = async () => {
-        const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    const toggleHidePassword = () => {
+        setHidePassword(!hidePassword)
+    }
 
-        if (fields.email === '' || fields.password === '') {
-            setError('Vui lòng điền đầy đủ thông tin.')
-            return
-        }
+    const setUserToRedux = (response, message) => {
+        dispatch(actions.currentUser(response.data.data))
+        localStorage.setItem('token', JSON.stringify(response.data.meta.token))
+        showToast({ message: message, type: 'success' })
+        setTimeout(() => {
+            window.location.reload()
+        }, 1000)
+        return
+    }
 
-        if (!regex.test(fields.email)) {
-            setError('Email không đúng định dạng, vui lòng nhập lại.')
-            return
-        }
-
+    const onSubmit = async (data) => {
         const handleLogin = async () => {
-            const response = await authServices.login(fields)
+            const response = await authServices.login(data)
 
             if (response) {
-                dispatch(actions.currentUser(response.data.data))
-                localStorage.setItem('token', JSON.stringify(response.data.meta.token))
-                showToast({ message: 'Đăng nhập thành công.', type: 'success' })
-                setTimeout(() => {
-                    window.location.reload()
-                }, 1000)
-                return
+                return setUserToRedux(response, 'Đăng nhập thành công.')
             } else {
                 setError('Email hoặc mật khẩu không chính xác, vui lòng nhập lại.')
             }
@@ -103,15 +103,10 @@ const Auth = ({ closeModal = () => {} }) => {
 
         const handleRegister = async () => {
             try {
-                const response = await authServices.register(fields)
+                const response = await authServices.register(data)
 
                 if (response) {
-                    dispatch(actions.currentUser(response.data.data))
-                    localStorage.setItem('token', JSON.stringify(response.meta.token))
-                    showToast({ message: 'Đăng ký tài khoản thành công.', type: 'success' })
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 1000)
+                    setUserToRedux(response, 'Đăng kí tài khoản thành công.')
                 } else {
                     setError(
                         'Đăng kí tài khoản thất bại, vui lòng thử lại hoặc liên hệ với admin qua email: tronghuanxxx@gmail.com'
@@ -139,12 +134,22 @@ const Auth = ({ closeModal = () => {} }) => {
         }
     }
 
-    const toggleHidePassword = () => {
-        setHidePassword(!hidePassword)
+    const handleLoginWithGoogle = async () => {
+        try {
+            const { user } = await signInWithPopup(config.auth, config.googleProvider)
+
+            if (user) {
+                const response = await authServices.loginWithGoogle({ token: user.accessToken })
+
+                setUserToRedux(response, 'Đăng nhập tài khoản thành công.')
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
-        <PopperWrapper className={cx('popper-wrapper')}>
+        <Popper.Wrapper className={cx('popper-wrapper')}>
             <div className={cx('wrapper')} onKeyDown={handleKeyDown}>
                 <header className={cx('header')}>
                     <button
@@ -158,24 +163,32 @@ const Auth = ({ closeModal = () => {} }) => {
                 </header>
                 <main className={cx('body')}>
                     <h3 className={cx('title')}>{type === 'login' ? 'Đăng nhập' : 'Đăng kí'} chà cà phê</h3>
-                    <div className={cx('input-group')}>
-                        <input
-                            ref={emailRef}
-                            type="text"
-                            placeholder="Nhập email của bạn"
-                            name="email"
-                            value={fields.email}
-                            onChange={setFieldsValue}
-                        />
-                        <div className={cx('password-container')}>
-                            <input
-                                ref={passwordRef}
-                                type={hidePassword ? 'password' : 'text'}
-                                placeholder="Nhập mật khẩu của bạn"
-                                name="password"
-                                value={fields.password}
-                                onChange={setFieldsValue}
+                    <form className={cx('input-group')} onSubmit={handleSubmit(onSubmit)}>
+                        <div>
+                            <Input
+                                type="text"
+                                label="Email"
+                                name="email"
+                                {...register('email', {
+                                    required: 'Email không được bỏ trống',
+                                    pattern: {
+                                        value: /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/,
+                                        message: 'Email không đúng định dạng',
+                                    },
+                                })}
                             />
+                            {errors.email && <small className={cx('error')}>{errors.email.message}</small>}
+                        </div>
+                        <div className={cx('password-container')}>
+                            <div>
+                                <Input
+                                    label="Mật khẩu"
+                                    type="password"
+                                    name="password"
+                                    {...register('password', { required: 'Mật khẩu không được bỏ trống' })}
+                                />
+                                {errors.password && <small className={cx('error')}>{errors.password.message}</small>}
+                            </div>
                             <button className={cx('toggle-hide-password')} onClick={toggleHidePassword}>
                                 {!hidePassword ? (
                                     <FontAwesomeIcon icon={faEye} />
@@ -185,13 +198,24 @@ const Auth = ({ closeModal = () => {} }) => {
                             </button>
                         </div>
                         {!!error && <span className={cx('error')}>{error}</span>}
+                        <Button primary className={cx('login-btn')} type="submit">
+                            {type === 'login' ? 'Đăng nhập' : 'Đăng kí'}
+                        </Button>
+                    </form>
+
+                    <div className={cx('separator')}>
+                        <span className={cx('separator-line')}></span>
+                        <span className={cx('separator-content')}>Hoặc</span>
+                        <span className={cx('separator-line')}></span>
                     </div>
-                    <Button primary className={cx('login-btn')} onClick={handleSubmit}>
-                        {type === 'login' ? 'Đăng nhập' : 'Đăng kí'}
-                    </Button>
-                    <small className={cx('small')}>
+
+                    <button className={cx('login-with-google')} onClick={handleLoginWithGoogle}>
+                        <GoogleIcon width="19px" height="19px" className={cx('google-icon')} />
+                        <span className={cx('text')}>Tiếp tục với google</span>
+                    </button>
+                    <span className={cx('small')}>
                         Một nơi tươi xanh. Đồ uống tươi ngon. Và những con người tươi cười
-                    </small>
+                    </span>
                 </main>
                 <footer className={cx('footer')}>
                     <span>{type === 'login' ? 'Bạn chưa có tài khoản? ' : 'Bạn đã có tài khoản? '}</span>
@@ -200,7 +224,7 @@ const Auth = ({ closeModal = () => {} }) => {
                     </span>
                 </footer>
             </div>
-        </PopperWrapper>
+        </Popper.Wrapper>
     )
 }
 

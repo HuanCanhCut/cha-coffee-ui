@@ -15,6 +15,16 @@ export const login = async ({ email, password }) => {
     }
 }
 
+export const loginWithGoogle = async ({ token }) => {
+    try {
+        return await request.post('auth/login/google', {
+            token,
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export const logout = async ({ accessToken }) => {
     try {
         return await request.post('auth/logout', [], {

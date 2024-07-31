@@ -186,8 +186,7 @@ const Order = () => {
         }
 
         if (!formState.payMethod.type) {
-            showToast({ message: 'Vui lòng chọn phương thức thanh toán', type: 'error' })
-            return
+            showToast({ message: 'Vui lòng chọn phương thức thanh toán', type: 'warning' })
         }
 
         if (productsInCart.length === 0) {

@@ -69,16 +69,9 @@
             }
         }
 
-        input {
-            padding: 12px 8px;
-            border-radius: 5px;
-            width: 100%;
-            background-color: #fff;
-        }
-
         .error {
             font-size: 1.4rem;
-            color: #fe2c55;
+            color: #ff5374;
             font-weight: 600;
         }
     }
@@ -89,6 +82,51 @@
         padding: 12px 0;
         border-radius: 5px;
         margin-top: 10px;
+    }
+
+    .separator {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .separator-line {
+        flex: 1;
+        height: 1px;
+        background-color: rgb(128, 133, 157);
+    }
+
+    .separator-content {
+        color: #fff;
+        padding: 0 8px;
+        font-size: 1.3rem;
+    }
+
+    .login-with-google {
+        width: 70%;
+        margin: 0 auto;
+        margin-top: 16px;
+        padding: 12px 0;
+        border-radius: 5px;
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        cursor: pointer;
+        position: relative;
+
+        .google-icon {
+            position: absolute;
+            left: 10px;
+            line-height: 1;
+        }
+
+        .text {
+            color: #333;
+            font-weight: 500;
+        }
     }
 
     .small {
@@ -113,5 +151,11 @@
 @media (max-width: 700px) {
     .body {
         padding: 0 40px !important;
+    }
+
+    .wrapper {
+        .login-with-google {
+            width: 100%;
+        }
     }
 }
