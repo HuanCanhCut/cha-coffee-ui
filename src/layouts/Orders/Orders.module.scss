@@ -51,9 +51,11 @@
         justify-content: center;
         align-items: center;
         color: #fff;
-        background-color: rgba($color: #000000, $alpha: 0.1);
+        background-color: rgba($color: #000000, $alpha: 0.3);
         font-size: 1.8rem;
         cursor: pointer;
+        z-index: 99;
+        border: 1px solid cyan;
     }
 
     .product-img-container {
@@ -190,5 +192,12 @@
 @media (max-width: 1113px) {
     .wrapper {
         width: calc(42% - 20px);
+    }
+}
+
+@media screen and (max-width: 739px) {
+    .product-img {
+        border-top-left-radius: 0 !important;
+        border-top-right-radius: 0 !important;
     }
 }

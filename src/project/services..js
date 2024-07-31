@@ -3,7 +3,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import numeral from 'numeral'
 import { actions } from '~/redux'
 
-export const showToast = ({ message, type = 'success', duration = 3500 }) => {
+export const showToast = ({ message, type = 'success', duration = 4000 }) => {
     return toast[type](message, {
         position: 'top-right',
         autoClose: duration,

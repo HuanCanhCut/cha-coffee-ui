@@ -49,19 +49,6 @@
                 width: 100%;
                 display: flex;
                 gap: 16px;
-
-                .tab {
-                    border-radius: 10px;
-                    flex: 1;
-                    background-color: var(--background);
-                    border-color: transparent;
-                    box-shadow: var(--default-border-shadow);
-
-                    &.active {
-                        border: 2px solid #00e1ff;
-                        background-color: #008fa2;
-                    }
-                }
             }
 
             .edit {
@@ -93,7 +80,18 @@
             }
 
             .selected-dish-title {
-                font-size: 500;
+                font-weight: 500;
+            }
+
+            .no-product {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                .no-product-title {
+                    font-weight: 500;
+                }
             }
 
             .order-item {

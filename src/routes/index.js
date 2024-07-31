@@ -21,6 +21,7 @@ const allRoutes = [
     {
         path: config.routes.order,
         component: Order,
+        private: true,
     },
     {
         path: config.routes.product,

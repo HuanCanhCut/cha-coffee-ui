@@ -11,21 +11,27 @@ export default memo(function PayMethods({ onClose = () => {}, payMethod }) {
     const options = useMemo(() => {
         return [
             {
-                type: 'qrcode',
+                type: 'banking',
                 title: 'QR đa năng',
                 description: 'Thanh toán với mọi đơn hàng, ví',
             },
             {
                 type: 'cash',
                 title: 'Thanh toán khi nhận hàng',
+                description: 'Thanh toán khi nhận hàng',
+                hideDescription: true,
             },
         ]
     }, [])
 
     const handleSelectOption = (option) => {
-        sendEvent({ eventName: 'order:change-pay-method', detail: option.type })
-
-        // fix bug when user close modal
+        sendEvent({
+            eventName: 'order:change-pay-method',
+            detail: {
+                type: option.type,
+                title: option.title,
+            },
+        })
 
         onClose()
     }

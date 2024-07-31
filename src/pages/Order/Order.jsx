@@ -7,53 +7,71 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import ReactModal from 'react-modal'
 
+import * as OrderServices from '~/services/orderService'
+import Voucher from './components/Voucher'
 import { Wrapper as PopperWrapper } from '~/components/Popper'
 import * as storeServices from '~/services/storeService'
 import Button from '~/components/Button'
-import { Voucher } from '~/components/Icons'
-import { getProductsInCart } from '~/redux/selector'
+import { CartIcon } from '~/components/Icons'
+import { authCurrentUser, getProductsInCart } from '~/redux/selector'
 import OrderItem from '~/components/OrderItem'
-import { decrementQuantity, formatPrice, incrementQuantity, removeProductFromCart } from '~/project/services.'
+import {
+    decrementQuantity,
+    formatPrice,
+    incrementQuantity,
+    removeProductFromCart,
+    showToast,
+} from '~/project/services.'
 import AddNote from '~/layouts/Orders/AddNote'
 import config from '~/config'
 import EditProfile from './components/EditProfile'
 import PayMethods from './components/PayMethods/PayMethods'
 import { listentEvent } from '~/helpers/event'
+import Note from './Note'
+import Tab from './components/Tabs/Tab'
 
 const cx = classNames.bind(styles)
 
 const Order = () => {
     const dispatch = useDispatch()
 
+    const currentUser = useSelector(authCurrentUser)
+    const accessToken = JSON.parse(localStorage.getItem('token'))
+
     const productsInCart = useSelector(getProductsInCart)
-    const [currentTab, setCurrentTab] = useState('delivery')
     const [store, setStore] = useState()
-    const [addNoteModal, setAddNoteModal] = useState(false)
-    const [productNoteIndex, setProductNoteIndex] = useState()
-    const [payMethod, setPayMethod] = useState('qrcode')
+    const [addNoteModal, setAddNoteModal] = useState({
+        isOpen: false,
+        productNoteIndex: 0,
+    })
+
     const [isOpen, setIsOpen] = useState({
         isOpen: false,
         component: null,
     })
 
-    const tabs = useMemo(() => {
-        return [
-            {
-                type: 'delivery',
-                title: 'Giao hàng',
-            },
-            {
-                type: 'come',
-                title: 'Tự đến lấy',
-            },
-        ]
-    }, [])
+    const [formState, setFormState] = useState({
+        payMethod: {
+            type: '',
+            title: '',
+        },
+        orderNote: '',
+        currentTab: 'delivery', // delivery or come
+    })
 
     useEffect(() => {
         const remove = listentEvent({
             eventName: 'order:change-pay-method',
-            handler: ({ detail: payMethod }) => {
-                setPayMethod(payMethod)
+            handler: ({ detail: { type, title } }) => {
+                setFormState((prev) => {
+                    return {
+                        ...prev,
+                        payMethod: {
+                            type,
+                            title,
+                        },
+                    }
+                })
             },
         })
         return remove
@@ -99,8 +117,10 @@ const Order = () => {
     const handleOpenAddNote = useCallback(
         (product) => {
             const index = productsInCart.findIndex((item) => item._id === product._id)
-            setProductNoteIndex(index)
-            setAddNoteModal(true)
+            setAddNoteModal({
+                isOpen: true,
+                productNoteIndex: index,
+            })
         },
         [productsInCart]
     )
@@ -115,24 +135,98 @@ const Order = () => {
         })
     }, [])
 
-    const handleOpenModal = (Component) => {
-        setIsOpen({
-            isOpen: true,
-            component: <Component onClose={handleClose} payMethod={payMethod} />,
+    const handleOpenModal = useCallback(
+        (Component) => {
+            setIsOpen({
+                isOpen: true,
+                component: (
+                    <Component
+                        onClose={handleClose}
+                        payMethod={formState.payMethod.type}
+                        onChangeModal={handleOpenModal}
+                    />
+                ),
+            })
+        },
+        [formState.payMethod, handleClose]
+    )
+
+    const orderDetails = useMemo(() => {
+        if (!Array.isArray(productsInCart)) return
+
+        return productsInCart.map((product) => {
+            return {
+                product_id: product._id,
+                quantity: product.quantity,
+                note: product.note,
+            }
         })
+    }, [productsInCart])
+
+    const handleOrder = async () => {
+        const currentUserFields = [
+            {
+                field: 'user_name',
+                error: 'Vui lòng điền tên người đặt',
+            },
+            {
+                field: 'phone_number',
+                error: 'Vui lòng nhập điện thoại liên hệ',
+            },
+            {
+                field: 'address',
+                error: 'Vui lòng nhập địa chỉ người đặt',
+            },
+        ]
+
+        for (const field of currentUserFields) {
+            if (!currentUser[field.field]) {
+                showToast({ message: field.error, type: 'warning' })
+            }
+        }
+
+        if (!formState.payMethod.type) {
+            showToast({ message: 'Vui lòng chọn phương thức thanh toán', type: 'error' })
+            return
+        }
+
+        if (productsInCart.length === 0) {
+            showToast({ message: 'Không có sản phẩm trong giỏ hàng', type: 'error' })
+            return
+        }
+
+        const data = {
+            type: formState.payMethod.type,
+            note: formState.orderNote,
+            order_details: orderDetails,
+        }
+
+        try {
+            const response = await OrderServices.createOrder({ accessToken, data })
+
+            if (response.status === 201) {
+                showToast({ message: 'Đặt hàng thành công', type: 'success' })
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
         <div className={cx('wrapper')}>
             <ReactModal
-                isOpen={addNoteModal}
+                isOpen={addNoteModal.isOpen}
                 onRequestClose={() => setAddNoteModal(false)}
                 className={cx('modal')}
                 overlayClassName={cx('overlay')}
                 ariaHideApp={false}
                 closeTimeoutMS={200}
             >
-                <AddNote productIndex={productNoteIndex} onClose={handleCloseAddNote} products={productsInCart} />
+                <AddNote
+                    productIndex={addNoteModal.productNoteIndex}
+                    onClose={handleCloseAddNote}
+                    products={productsInCart}
+                />
             </ReactModal>
 
             <ReactModal
@@ -159,19 +253,7 @@ const Order = () => {
                             </header>
                             <main className={cx('main')}>
                                 <div className={cx('tabs')}>
-                                    {tabs.map((tab, index) => (
-                                        <React.Fragment key={index}>
-                                            <Button
-                                                outline
-                                                className={cx('tab', {
-                                                    active: tab.type === currentTab,
-                                                })}
-                                                onClick={() => setCurrentTab(tab.type)}
-                                            >
-                                                {tab.title}
-                                            </Button>
-                                        </React.Fragment>
-                                    ))}
+                                    <Tab setFormState={setFormState} formState={formState} />
                                 </div>
                                 <>
                                     {store && (
@@ -199,48 +281,56 @@ const Order = () => {
                                                     <span
                                                         className={cx('edit')}
                                                         onClick={() => {
-                                                            // handleOpenModal('payment', PayMethods)
                                                             handleOpenModal(PayMethods)
                                                         }}
                                                     >
                                                         Chọn
                                                     </span>
                                                 </p>
-                                                <span className={cx('content')}>Chọn phương thức thanh toán</span>
+                                                <span className={cx('content')}>
+                                                    {formState.payMethod.type === '' || formState.payMethod.title === ''
+                                                        ? 'Chọn phương thức thanh toán'
+                                                        : formState.payMethod.title}
+                                                </span>
                                             </PopperWrapper>
 
                                             <PopperWrapper className={cx('popper')}>
-                                                <p className={cx('edit-container')}>
-                                                    <span className={cx('voucher')}>
-                                                        <Voucher />
-                                                        Mã giảm giá
-                                                    </span>
+                                                <p
+                                                    className={cx('edit-container')}
+                                                    onClick={() => {
+                                                        handleOpenModal(Voucher)
+                                                    }}
+                                                >
+                                                    <span className={cx('voucher')}>Mã giảm giá</span>
                                                     <span className={cx('edit')}>Chọn</span>
                                                 </p>
                                             </PopperWrapper>
 
                                             <PopperWrapper className={cx('popper')}>
                                                 <h4 className={cx('selected-dish-title')}>Món đã chọn</h4>
-                                                {productsInCart.map((product, index) => (
-                                                    <React.Fragment key={index}>
-                                                        <OrderItem
-                                                            product={product}
-                                                            className={cx('order-item')}
-                                                            handleRemoveProduct={handleRemoveProduct}
-                                                            handleDecrementQuantity={handleDecrementQuantity}
-                                                            handleIncrementQuantity={handleIncrementQuantity}
-                                                            handleOpenAddNote={handleOpenAddNote}
-                                                        />
-                                                    </React.Fragment>
-                                                ))}
+                                                {productsInCart.length > 0 ? (
+                                                    productsInCart.map((product, index) => (
+                                                        <React.Fragment key={index}>
+                                                            <OrderItem
+                                                                product={product}
+                                                                className={cx('order-item')}
+                                                                handleRemoveProduct={handleRemoveProduct}
+                                                                handleDecrementQuantity={handleDecrementQuantity}
+                                                                handleIncrementQuantity={handleIncrementQuantity}
+                                                                handleOpenAddNote={handleOpenAddNote}
+                                                            />
+                                                        </React.Fragment>
+                                                    ))
+                                                ) : (
+                                                    <div className={cx('no-product')}>
+                                                        <CartIcon width="120" height="120" />
+                                                        <h3 className={cx('no-product-title')}>
+                                                            Không có gì trong giỏ hàng
+                                                        </h3>
+                                                    </div>
+                                                )}
                                             </PopperWrapper>
-                                            <PopperWrapper className={cx('popper')}>
-                                                <input
-                                                    type="text"
-                                                    placeholder="Ghi chú cho món ăn, đơn hàng"
-                                                    className={cx('order-note')}
-                                                />
-                                            </PopperWrapper>
+                                            <Note formState={formState} setFormState={setFormState} />
                                         </>
                                     )}
                                 </>
@@ -253,7 +343,7 @@ const Order = () => {
                                 <span>Tổng tiền {productsInCart.length} phần</span>
                                 <span className={cx('price')}>{formatPrice(totalPrice)}đ</span>
                             </div>
-                            {currentTab !== 'come' && (
+                            {formState.currentTab !== 'come' && (
                                 <div className={cx('transport-fee')}>
                                     <span>Phí vận chuyển</span>
                                     <span className={cx('price')}>0đ</span>
@@ -264,7 +354,7 @@ const Order = () => {
                                 <span className={cx('price')}>{formatPrice(totalPrice)}đ</span>
                             </div>
 
-                            <Button primary className={cx('order-btn')}>
+                            <Button primary className={cx('order-btn')} onClick={handleOrder}>
                                 Thanh toán
                             </Button>
                         </PopperWrapper>

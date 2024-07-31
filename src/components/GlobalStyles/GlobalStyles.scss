@@ -92,6 +92,12 @@ input,
     font-optical-sizing: auto;
 }
 
+input {
+    &::placeholder {
+        color: #ffffff99;
+    }
+}
+
 button {
     cursor: pointer;
 }

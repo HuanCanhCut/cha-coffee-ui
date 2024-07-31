@@ -1,0 +1,12 @@
+.tab {
+    border-radius: 10px;
+    flex: 1;
+    background-color: var(--background);
+    border-color: transparent;
+    box-shadow: var(--default-border-shadow);
+
+    &.active {
+        border: 2px solid #00e1ff;
+        background-color: #008fa2;
+    }
+}
