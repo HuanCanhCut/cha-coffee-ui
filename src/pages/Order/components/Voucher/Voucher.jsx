@@ -83,7 +83,7 @@ export default memo(function Voucher({ onClose = () => {}, onChangeModal = () =>
                     </div>
                 </header>
                 <main className={cx('main')}>
-                    {currentTab === 'your' && !currentUser.phone_number ? (
+                    {currentTab === 'your' && !currentUser?.phone_number ? (
                         <h2>
                             Vui lòng nhập số điện thoại đặt hàng để xem mã giảm giá của bạn.
                             <span className={cx('open-info')} onClick={handleOpenUserInfo}>

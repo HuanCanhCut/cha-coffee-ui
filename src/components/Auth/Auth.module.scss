@@ -1,10 +1,9 @@
 .popper-wrapper {
     padding: 0 !important;
-    overflow: hidden;
 }
 
 .wrapper {
-    width: min(700px, calc(100vw - 40px));
+    width: min(600px, calc(100vw - 40px));
 
     background: var(--default-background-color-modal);
     color: #fff;

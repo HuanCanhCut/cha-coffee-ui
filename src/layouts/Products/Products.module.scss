@@ -6,3 +6,29 @@
 .category-title {
     font-weight: 500;
 }
+
+.navigate-order {
+    position: fixed;
+    bottom: -45px;
+    right: 15px;
+    border-radius: 5px;
+    color: #fff;
+    padding: 12px;
+    border: 1px solid cyan;
+    transition: all 0.2s ease-in-out;
+
+    &.visible {
+        bottom: 30px;
+    }
+
+    .quantity {
+        font-size: 1.4rem;
+        margin-left: 4px;
+    }
+}
+
+@media screen and (max-width: 739px) {
+    .wrapper {
+        padding-bottom: 80px;
+    }
+}

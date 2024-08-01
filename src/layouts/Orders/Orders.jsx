@@ -137,7 +137,7 @@ export default memo(function Orders() {
                         </p>
                         <Link to={config.routes.order} className={cx('order-btn-container')}>
                             <Button primary className={cx('order-btn')}>
-                                Thanh toán
+                                Đặt hàng
                             </Button>
                         </Link>
                     </div>
