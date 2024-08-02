@@ -4,11 +4,10 @@ import { useEffect, useRef, useState, createContext } from 'react'
 import socketIOClient from 'socket.io-client'
 import { groupProductByCategory } from '~/project/services.'
 
-import Orders from '~/layouts/Orders'
-import Header from '~/layouts/Header'
-import Sidebar from '~/layouts/SideBar/Sidebar'
+import Orders from '~/layouts/component/Orders'
+import Sidebar from '~/layouts/component/SideBar/Sidebar'
 import * as productServices from '~/services/productsService'
-import Products from '~/layouts/Products'
+import Products from '~/layouts/component/Products'
 import { listentEvent } from '~/helpers/event'
 
 const cx = classNames.bind(styles)
@@ -70,7 +69,6 @@ const Home = () => {
     return (
         <HomeContext.Provider value={{ products }}>
             <div className={cx('wrapper')}>
-                <Header />
                 <div className={cx('grid')}>
                     <div className={cx('row')}>
                         <div className={cx('col', 'l-3', 'm-0', 'c-0')}>

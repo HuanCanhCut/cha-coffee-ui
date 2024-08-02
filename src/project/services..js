@@ -1,5 +1,6 @@
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import * as authServices from '~/services/authService'
 import numeral from 'numeral'
 import { actions } from '~/redux'
 
@@ -47,4 +48,17 @@ export const incrementQuantity = ({ dispatch, product, products }) => {
 
 export const decrementQuantity = ({ dispatch, product, products }) => {
     dispatch(actions.subProductsToCart({ product, products }))
+}
+
+export const logout = async ({ dispatch }) => {
+    const accessToken = JSON.parse(localStorage.getItem('token'))
+
+    const response = await authServices.logout({
+        accessToken,
+    })
+    if (response?.status === 200) {
+        localStorage.removeItem('token')
+        dispatch(actions.currentUser(null))
+        window.location.reload()
+    }
 }

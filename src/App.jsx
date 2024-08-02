@@ -1,13 +1,15 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { allRoutes } from '~/routes'
-import * as authServices from './services/authService'
 import socketIOClient from 'socket.io-client'
-import './index.css'
 import { useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
+
+import DefaultLayout from './layouts/DefaultLayout'
+import * as authServices from './services/authService'
 import { actions } from './redux'
 import { showToast } from './project/services.'
 import { listentEvent } from './helpers/event'
+import './index.css'
 
 function App() {
     const dispatch = useDispatch()
@@ -69,7 +71,17 @@ function App() {
                     {allRoutes.map((route, index) => {
                         const Page = route.component
 
-                        return <Route key={index} path={route.path} element={<Page />} />
+                        return (
+                            <Route
+                                key={index}
+                                path={route.path}
+                                element={
+                                    <DefaultLayout>
+                                        <Page />
+                                    </DefaultLayout>
+                                }
+                            />
+                        )
                     })}
                 </Routes>
             </div>

@@ -22,7 +22,7 @@ import {
     removeProductFromCart,
     showToast,
 } from '~/project/services.'
-import AddNote from '~/layouts/Orders/AddNote'
+import AddNote from '~/layouts/component/Orders/AddNote'
 import config from '~/config'
 import EditProfile from './components/EditProfile'
 import PayMethods from './components/PayMethods/PayMethods'
@@ -180,6 +180,9 @@ const Order = () => {
         ]
 
         for (const field of currentUserFields) {
+            if (!currentUser) {
+                return
+            }
             if (!currentUser[field.field]) {
                 showToast({ message: field.error, type: 'warning' })
             }

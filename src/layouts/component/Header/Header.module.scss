@@ -3,7 +3,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: sticky;
+    position: fixed;
     top: 0;
     box-shadow: var(--default-border-shadow);
     background: var(--default-background-color-modal);
@@ -39,6 +39,11 @@
         justify-content: flex-end;
     }
 
+    .login-btn {
+        display: flex;
+        align-items: center;
+    }
+
     .header-right-btn {
         margin-left: 16px;
     }
@@ -58,12 +63,14 @@
     }
 }
 
-@media (max-width: 739px) {
-    .header-right-btn {
+@media (max-width: 1113px) {
+    .hide-on-mobile-tablet {
         display: none;
     }
+}
 
-    .login-btn {
+@media (max-width: 739px) {
+    .hide-on-mobile {
         display: none;
     }
 }

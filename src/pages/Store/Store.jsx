@@ -81,6 +81,7 @@ export default memo(function Store() {
                     outline
                     leftIcon={<FontAwesomeIcon icon={faChevronLeft} className={cx('go-back-icon')} />}
                     onClick={() => navigate(-1)}
+                    className="c-0"
                 >
                     Quay lại
                 </Button>

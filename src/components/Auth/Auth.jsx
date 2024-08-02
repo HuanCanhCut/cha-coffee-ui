@@ -18,7 +18,7 @@ import { GoogleIcon } from '../Icons'
 
 const cx = classNames.bind(styles)
 
-const Auth = ({ closeModal = () => {} }) => {
+const Auth = ({ type = 'login', closeModal = () => {} }) => {
     const dispatch = useDispatch()
 
     const emailRef = useRef()
@@ -31,7 +31,7 @@ const Auth = ({ closeModal = () => {} }) => {
         formState: { errors },
     } = useForm()
 
-    const [type, setType] = useState('login')
+    const [currentType, setCurrentType] = useState(type)
     const [error, setError] = useState('')
 
     const [inputFocusIndex, setInputFocusIndex] = useState(0)
@@ -46,7 +46,7 @@ const Auth = ({ closeModal = () => {} }) => {
     }, [inputFocusIndex])
 
     const handleSwitchType = () => {
-        setType(type === 'login' ? 'register' : 'login')
+        setCurrentType(currentType === 'login' ? 'register' : 'login')
     }
 
     const handleKeyDown = (e) => {
@@ -211,7 +211,7 @@ const Auth = ({ closeModal = () => {} }) => {
 
                     <button className={cx('login-with-google')} onClick={handleLoginWithGoogle}>
                         <GoogleIcon width="19px" height="19px" className={cx('google-icon')} />
-                        <span className={cx('text')}>Tiếp tục với google</span>
+                        <span className={cx('text')}>{type === 'login' ? 'Đăng nhập' : 'Đăng kí'} với google</span>
                     </button>
                     <span className={cx('small')}>
                         Một nơi tươi xanh. Đồ uống tươi ngon. Và những con người tươi cười
