@@ -82,7 +82,6 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
 
     const setUserToRedux = (response, message) => {
         dispatch(actions.currentUser(response.data.data))
-        localStorage.setItem('token', JSON.stringify(response.data.meta.token))
         showToast({ message: message, type: 'success' })
         setTimeout(() => {
             window.location.reload()

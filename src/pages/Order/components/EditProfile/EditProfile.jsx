@@ -18,7 +18,6 @@ const cx = classNames.bind(style)
 
 export default memo(function EditProfile({ onClose = () => {} }) {
     const dispatch = useDispatch()
-    const accessToken = JSON.parse(localStorage.getItem('token'))
     const currentUser = useSelector(authCurrentUser)
 
     const {
@@ -29,7 +28,6 @@ export default memo(function EditProfile({ onClose = () => {} }) {
 
     const onSubmit = async (data) => {
         const response = await authServices.updateCurrentUser({
-            accessToken,
             userName: data.userName,
             phone_number: data.phone,
             address: data.address,

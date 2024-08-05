@@ -26,7 +26,6 @@ const Product = ({ product, productIndex, productsLength, addProductToCart }) =>
 
     const currentUser = useSelector(authCurrentUser)
     const productsInCart = useSelector(getProductsInCart)
-    const accessToken = JSON.parse(localStorage.getItem('token'))
     const secondProductRef = useRef(null)
     const quantityRef = useRef(null)
 
@@ -121,7 +120,7 @@ const Product = ({ product, productIndex, productsLength, addProductToCart }) =>
     const handleDeleteProduct = useCallback(
         async (product) => {
             try {
-                const response = await productServices.deleteProduct({ productID: product._id, accessToken })
+                const response = await productServices.deleteProduct({ productID: product._id })
                 handleCloseModal({ type: 'delete' })
                 if (response?.status === 200 || response?.status === 204) {
                     showToast({ message: 'Xoá sản phẩm thành công', type: 'success' })
@@ -136,7 +135,7 @@ const Product = ({ product, productIndex, productsLength, addProductToCart }) =>
                 console.log(error)
             }
         },
-        [accessToken, handleCloseModal]
+        [handleCloseModal]
     )
 
     const handleConfirm = useCallback(

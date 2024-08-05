@@ -13,7 +13,6 @@ import './index.css'
 
 function App() {
     const dispatch = useDispatch()
-    const accessToken = JSON.parse(localStorage.getItem('token'))
 
     const socketRef = useRef()
 
@@ -43,18 +42,12 @@ function App() {
     useEffect(() => {
         const getCurrentUser = async () => {
             try {
-                if (!accessToken) {
-                    dispatch(actions.currentUser(null))
-                    return
-                }
-
-                const response = await authServices.getCurrentUser({ accessToken })
+                const response = await authServices.getCurrentUser()
 
                 if (response) {
                     dispatch(actions.currentUser(response.data.data))
                 } else {
                     dispatch(actions.currentUser(null))
-                    localStorage.removeItem('token')
                 }
             } catch (error) {
                 console.log(error)
@@ -62,7 +55,7 @@ function App() {
         }
 
         getCurrentUser()
-    }, [accessToken, dispatch])
+    }, [dispatch])
 
     return (
         <Router>

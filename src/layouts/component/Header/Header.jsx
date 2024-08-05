@@ -153,11 +153,21 @@ const Header = () => {
                     </div>
                 </div>
 
-                <div className={cx('col', 'l-4', 'm-5', 'c-6')}>
+                <div
+                    className={cx('col', 'l-4', 'm-5', {
+                        'c-6': !currentUser,
+                        'c-8': currentUser,
+                    })}
+                >
                     <Search />
                 </div>
 
-                <div className={cx('header-right', 'col', 'l-4', 'm-5', 'c-4')}>
+                <div
+                    className={cx('header-right', 'col', 'l-4', 'm-5', {
+                        'c-4': !currentUser,
+                        'c-2': currentUser,
+                    })}
+                >
                     <div className={cx('row', 'header-right-row')}>
                         {currentUser ? (
                             <>

@@ -36,7 +36,6 @@ const Order = () => {
     const dispatch = useDispatch()
 
     const currentUser = useSelector(authCurrentUser)
-    const accessToken = JSON.parse(localStorage.getItem('token'))
 
     const productsInCart = useSelector(getProductsInCart)
     const [store, setStore] = useState()
@@ -204,7 +203,7 @@ const Order = () => {
         }
 
         try {
-            const response = await OrderServices.createOrder({ accessToken, data })
+            const response = await OrderServices.createOrder({ data })
 
             if (response.status === 201) {
                 showToast({ message: 'Đặt hàng thành công', type: 'success' })

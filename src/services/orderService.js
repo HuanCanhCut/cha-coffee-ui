@@ -1,12 +1,8 @@
 import * as request from '../utils/httpRequest'
 
-export const createOrder = async ({ accessToken, data }) => {
+export const createOrder = async ({ data }) => {
     try {
-        return await request.post('order', data, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        })
+        return await request.post('order', data)
     } catch (error) {
         console.log(error)
     }

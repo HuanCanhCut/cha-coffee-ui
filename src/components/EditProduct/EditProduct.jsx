@@ -47,7 +47,6 @@ const reducer = (state, action) => {
 
 export default memo(function EditProduct({ isOpen, onClose = () => {}, title, product = {} }) {
     const { products } = useContext(HomeContext)
-    const accessToken = JSON.parse(localStorage.getItem('token'))
 
     const categories = Object.keys(products)
 
@@ -150,7 +149,7 @@ export default memo(function EditProduct({ isOpen, onClose = () => {}, title, pr
         }
 
         try {
-            const response = await productServices.updateProduct({ accessToken, productID, formData })
+            const response = await productServices.updateProduct({ productID, formData })
             onClose({ type: 'edit' })
 
             if (response) {

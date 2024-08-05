@@ -25,13 +25,9 @@ export const loginWithGoogle = async ({ token }) => {
     }
 }
 
-export const logout = async ({ accessToken }) => {
+export const logout = async () => {
     try {
-        return await request.post('auth/logout', [], {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        })
+        return await request.post('auth/logout')
     } catch (error) {
         console.log(error)
     }
@@ -52,33 +48,21 @@ export const register = async ({ email, password, type = 'email' }) => {
     }
 }
 
-export const getCurrentUser = async ({ accessToken }) => {
+export const getCurrentUser = async () => {
     try {
-        return await request.get('auth/me', {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        })
+        return await request.get('auth/me')
     } catch (error) {
         console.log(error)
     }
 }
 
-export const updateCurrentUser = async ({ accessToken, userName, phone_number, address }) => {
+export const updateCurrentUser = async ({ userName, phone_number, address }) => {
     try {
-        return await request.patch(
-            'auth/me',
-            {
-                user_name: userName,
-                phone_number,
-                address,
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            }
-        )
+        return await request.patch('auth/me', {
+            user_name: userName,
+            phone_number,
+            address,
+        })
     } catch (error) {
         console.log(error)
     }

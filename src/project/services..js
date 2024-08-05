@@ -51,11 +51,7 @@ export const decrementQuantity = ({ dispatch, product, products }) => {
 }
 
 export const logout = async ({ dispatch }) => {
-    const accessToken = JSON.parse(localStorage.getItem('token'))
-
-    const response = await authServices.logout({
-        accessToken,
-    })
+    const response = await authServices.logout()
     if (response?.status === 200) {
         localStorage.removeItem('token')
         dispatch(actions.currentUser(null))
