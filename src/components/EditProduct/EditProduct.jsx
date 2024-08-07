@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind'
 import style from './EditProduct.module.scss'
 import ReactModal from 'react-modal'
-import { memo, useContext, useMemo, useReducer, useRef, useState } from 'react'
+import { memo, useMemo, useReducer, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faXmark } from '@fortawesome/free-solid-svg-icons'
 import * as productServices from '~/services/productsService'
@@ -9,11 +9,12 @@ import * as productServices from '~/services/productsService'
 import Image from '../Image'
 import { Wrapper as PopperWrapper } from '~/components/Popper'
 import Button from '../Button'
-import { HomeContext } from '~/pages/Home/Home'
 import Select from '../Select/Select'
 import { CheckboxTick } from '../Icons'
 import { showToast } from '~/project/services.'
 import { sendEvent } from '~/helpers/event'
+import { useSelector } from 'react-redux'
+import { getProducts } from '~/redux/selector'
 
 const cx = classNames.bind(style)
 
@@ -46,7 +47,8 @@ const reducer = (state, action) => {
 }
 
 export default memo(function EditProduct({ isOpen, onClose = () => {}, title, product = {} }) {
-    const { products } = useContext(HomeContext)
+    const products = useSelector(getProducts)
+    const accessToken = JSON.parse(localStorage.getItem('token'))
 
     const categories = Object.keys(products)
 
@@ -149,7 +151,7 @@ export default memo(function EditProduct({ isOpen, onClose = () => {}, title, pr
         }
 
         try {
-            const response = await productServices.updateProduct({ productID, formData })
+            const response = await productServices.updateProduct({ accessToken, productID, formData })
             onClose({ type: 'edit' })
 
             if (response) {

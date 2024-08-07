@@ -8,7 +8,6 @@ export const login = async ({ email, password }) => {
             password,
         })
     } catch (error) {
-        console.log(error)
         if (error.response.status === 409) {
             showToast({ message: 'Tài khoản đã tồn tại' })
         }
@@ -21,7 +20,7 @@ export const loginWithGoogle = async ({ token }) => {
             token,
         })
     } catch (error) {
-        console.log(error)
+        showToast({ message: 'Đăng nhập thất bại, vui lòng thử lại', type: 'error' })
     }
 }
 
@@ -52,7 +51,7 @@ export const getCurrentUser = async () => {
     try {
         return await request.get('auth/me')
     } catch (error) {
-        console.log(error)
+        //
     }
 }
 

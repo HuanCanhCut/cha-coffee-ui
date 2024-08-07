@@ -1,50 +1,22 @@
 import classNames from 'classnames/bind'
 import styles from './Home.module.scss'
-import { useEffect, useRef, useState, createContext } from 'react'
-import socketIOClient from 'socket.io-client'
-import { groupProductByCategory } from '~/project/services.'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
+import { groupProductByCategory } from '~/project/services.'
 import Orders from '~/layouts/component/Orders'
 import Sidebar from '~/layouts/component/SideBar/Sidebar'
 import * as productServices from '~/services/productsService'
 import Products from '~/layouts/component/Products'
-import { listentEvent } from '~/helpers/event'
+import { getProducts } from '~/redux/selector'
+import { actions } from '~/redux'
 
 const cx = classNames.bind(styles)
 
-export const HomeContext = createContext()
-
 const Home = () => {
-    const [products, setProducts] = useState([])
+    const dispatch = useDispatch()
 
-    const socketRef = useRef()
-
-    useEffect(() => {
-        socketRef.current = socketIOClient.connect(import.meta.env.VITE_APP_SERVER_URL)
-
-        socketRef.current.on('new-products', (newProducts) => {
-            const groupProducts = groupProductByCategory(newProducts.data)
-            setProducts({ ...groupProducts })
-        })
-
-        return () => {
-            socketRef.current.disconnect()
-        }
-    }, [])
-
-    useEffect(() => {
-        const remove = listentEvent({
-            eventName: 'product:update-product',
-            handler: ({ detail: product }) => {
-                socketRef.current.emit('get-products', {
-                    id: product._id,
-                    name: product.name,
-                })
-            },
-        })
-
-        return remove
-    }, [])
+    const products = useSelector(getProducts)
 
     useEffect(() => {
         const getProducts = async () => {
@@ -54,9 +26,7 @@ const Home = () => {
                 if (response) {
                     const groupProducts = groupProductByCategory(response.data.data)
 
-                    setProducts((prev) => {
-                        return { ...prev, ...groupProducts }
-                    })
+                    dispatch(actions.addProducts(groupProducts))
                 }
             } catch (error) {
                 console.log(error)
@@ -64,26 +34,24 @@ const Home = () => {
         }
 
         getProducts()
-    }, [])
+    }, [dispatch])
 
     return (
-        <HomeContext.Provider value={{ products }}>
-            <div className={cx('wrapper')}>
-                <div className={cx('grid')}>
-                    <div className={cx('row')}>
-                        <div className={cx('col', 'l-3', 'm-0', 'c-0')}>
-                            {Object.keys(products).length > 0 && <Sidebar products={products} />}
-                        </div>
-                        <div className={cx('col', 'l-6', 'm-7', 'c-12')}>
-                            {Object.keys(products).length > 0 && <Products products={products} />}
-                        </div>
-                        <div className={cx('col', 'l-3', 'm-5', 'c-0')}>
-                            <Orders />
-                        </div>
+        <div className={cx('wrapper')}>
+            <div className={cx('grid')}>
+                <div className={cx('row')}>
+                    <div className={cx('col', 'l-3', 'm-0', 'c-0')}>
+                        {Object.keys(products).length > 0 && <Sidebar products={products} />}
+                    </div>
+                    <div className={cx('col', 'l-6', 'm-7', 'c-12')}>
+                        {Object.keys(products).length > 0 && <Products products={products} />}
+                    </div>
+                    <div className={cx('col', 'l-3', 'm-5', 'c-0')}>
+                        <Orders />
                     </div>
                 </div>
             </div>
-        </HomeContext.Provider>
+        </div>
     )
 }
 

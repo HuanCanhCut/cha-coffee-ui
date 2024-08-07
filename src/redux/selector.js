@@ -5,3 +5,7 @@ export const authCurrentUser = (state) => {
 export const getProductsInCart = (state) => {
     return state.cart.products
 }
+
+export const getProducts = (state) => {
+    return state.product.products
+}

@@ -52,9 +52,10 @@ export const decrementQuantity = ({ dispatch, product, products }) => {
 
 export const logout = async ({ dispatch }) => {
     const response = await authServices.logout()
-    if (response?.status === 200) {
-        localStorage.removeItem('token')
+    if (response?.status === 204) {
         dispatch(actions.currentUser(null))
         window.location.reload()
+    } else {
+        showToast('Đăng xuất thất bại, vui lòng liên hệ quản lí.')
     }
 }

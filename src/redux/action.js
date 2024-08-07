@@ -39,3 +39,10 @@ export const addNoteOrder = (payload) => {
         payload,
     }
 }
+
+export const addProducts = (payload) => {
+    return {
+        type: 'add-product',
+        payload,
+    }
+}

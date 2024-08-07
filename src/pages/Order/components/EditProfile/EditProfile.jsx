@@ -33,7 +33,7 @@ export default memo(function EditProfile({ onClose = () => {} }) {
             address: data.address,
         })
 
-        if (response.status === 200) {
+        if (response?.status === 200) {
             dispatch(actions.currentUser(response.data.data))
             onClose('user-info')
             showToast({ message: 'Cập nhật thành công' })

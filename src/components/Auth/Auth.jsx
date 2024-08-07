@@ -83,6 +83,8 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
     const setUserToRedux = (response, message) => {
         dispatch(actions.currentUser(response.data.data))
         showToast({ message: message, type: 'success' })
+        localStorage.setItem('exp', response.data?.meta?.pagination?.exp)
+
         setTimeout(() => {
             window.location.reload()
         }, 1000)
@@ -117,7 +119,7 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
         }
 
         try {
-            switch (type) {
+            switch (currentType) {
                 case 'login':
                     handleLogin()
                     break
@@ -140,7 +142,11 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
             if (user) {
                 const response = await authServices.loginWithGoogle({ token: user.accessToken })
 
-                setUserToRedux(response, 'Đăng nhập tài khoản thành công.')
+                if (response?.status === 200) {
+                    setUserToRedux(response, 'Đăng nhập thành công')
+                } else {
+                    showToast({ message: 'Đăng nhập thất bại, vui lòng thử lại hoặc liên hệ quản lí.', type: 'error' })
+                }
             }
         } catch (error) {
             console.log(error)
@@ -161,7 +167,7 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
                     </button>
                 </header>
                 <main className={cx('body')}>
-                    <h3 className={cx('title')}>{type === 'login' ? 'Đăng nhập' : 'Đăng kí'} chà cà phê</h3>
+                    <h3 className={cx('title')}>{currentType === 'login' ? 'Đăng nhập' : 'Đăng kí'} chà cà phê</h3>
                     <form className={cx('input-group')} onSubmit={handleSubmit(onSubmit)}>
                         <div>
                             <Input
@@ -198,7 +204,7 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
                         </div>
                         {!!error && <span className={cx('error')}>{error}</span>}
                         <Button primary className={cx('login-btn')} type="submit">
-                            {type === 'login' ? 'Đăng nhập' : 'Đăng kí'}
+                            {currentType === 'login' ? 'Đăng nhập' : 'Đăng kí'}
                         </Button>
                     </form>
 
@@ -217,9 +223,9 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
                     </span>
                 </main>
                 <footer className={cx('footer')}>
-                    <span>{type === 'login' ? 'Bạn chưa có tài khoản? ' : 'Bạn đã có tài khoản? '}</span>
+                    <span>{currentType === 'login' ? 'Bạn chưa có tài khoản? ' : 'Bạn đã có tài khoản? '}</span>
                     <span className={cx('switch')} onClick={handleSwitchType}>
-                        {type === 'login' ? 'Đăng ký' : 'Đăng nhập'}
+                        {currentType === 'login' ? 'Đăng ký' : 'Đăng nhập'}
                     </span>
                 </footer>
             </div>

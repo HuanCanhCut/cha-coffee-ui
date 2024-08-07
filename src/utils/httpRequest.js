@@ -1,9 +1,58 @@
 import axios from 'axios'
+import { showToast } from '~/project/services.'
 
 const request = axios.create({
     withCredentials: true,
     baseURL: import.meta.env.VITE_APP_BASE_URL,
 })
+
+// once refresh token
+let refreshTokenRequest = null
+
+const refreshToken = async () => {
+    return await axios.post(
+        `${import.meta.env.VITE_APP_BASE_URL}auth/refresh`,
+        {},
+        {
+            withCredentials: true,
+        }
+    )
+}
+
+request.interceptors.request.use(
+    async (config) => {
+        const tokenExpired = localStorage.getItem('exp')
+
+        if (!tokenExpired) {
+            return config
+        }
+
+        if (tokenExpired < Math.floor(Date.now() / 1000)) {
+            try {
+                refreshTokenRequest = refreshTokenRequest ? refreshTokenRequest : refreshToken()
+
+                const response = await refreshTokenRequest
+
+                localStorage.setItem('exp', response?.data?.exp)
+                refreshTokenRequest = null
+            } catch (error) {
+                if (error.response.status === 401) {
+                    showToast('Có một lỗi xảy không mong muốn, vui lòng đăng nhập lại.')
+
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 1500)
+                }
+                console.log(error)
+            }
+        }
+
+        return config
+    },
+    (error) => {
+        return Promise.reject(error)
+    }
+)
 
 export const get = async (path, options = {}) => {
     const response = await request.get(path, options)
