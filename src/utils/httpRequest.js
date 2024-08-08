@@ -36,12 +36,13 @@ request.interceptors.request.use(
                 localStorage.setItem('exp', response?.data?.exp)
                 refreshTokenRequest = null
             } catch (error) {
-                if (error.response.status === 401) {
-                    showToast('Có một lỗi xảy không mong muốn, vui lòng đăng nhập lại.')
+                console.log(error)
 
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 1500)
+                if (error.response.status === 401) {
+                    showToast({
+                        message: 'Refresh token đã hết hạn, vui lòng đăng nhập lại',
+                        type: 'warning',
+                    })
                 }
                 console.log(error)
             }
