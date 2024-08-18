@@ -66,16 +66,20 @@
     }
 
     .menu-container {
-        margin-top: 20px;
+        margin-top: 6px;
     }
 
     .menu-item {
-        padding: 12px;
+        padding: 12px 16px;
         border-radius: 4px;
         display: flex;
         align-items: center;
         gap: 8px;
         cursor: pointer;
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.07);
+        }
 
         &.active {
             background-color: rgba(255, 255, 255, 0.1);

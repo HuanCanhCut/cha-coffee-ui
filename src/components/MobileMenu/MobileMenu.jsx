@@ -7,6 +7,7 @@ import {
     faRightFromBracket,
     faRightToBracket,
     faStore,
+    faUser,
     faXmark,
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -53,30 +54,25 @@ export default memo(function MobileMenu({ isOpen, closeMenu = () => {} }) {
     const currentUser = useSelector(authCurrentUser)
 
     const userMenu = useMemo(() => {
-        if (!currentUser) {
-            return [
-                ...MENU_ITEM,
-                {
-                    title: 'Đăng nhập',
-                    children: [
-                        {
-                            icon: <FontAwesomeIcon icon={faRightToBracket} />,
-                            label: 'Đăng nhập',
-                            type: 'login',
-                        },
-                    ],
-                },
-            ]
-        }
         return [
             ...MENU_ITEM,
+
             {
-                title: 'Tài khoản',
+                title: currentUser ? 'Tài khoản' : 'Đăng nhập',
                 children: [
                     {
-                        icon: <FontAwesomeIcon icon={faRightFromBracket} />,
-                        label: 'Đăng xuất',
-                        type: 'logout',
+                        icon: <FontAwesomeIcon icon={faUser} />,
+                        label: 'Thông tin cá nhân',
+                        type: 'user-info',
+                    },
+                    {
+                        icon: currentUser ? (
+                            <FontAwesomeIcon icon={faRightFromBracket} />
+                        ) : (
+                            <FontAwesomeIcon icon={faRightToBracket} />
+                        ),
+                        label: currentUser ? 'Đăng xuất' : 'Đăng nhập',
+                        type: currentUser ? 'logout' : 'login',
                     },
                 ],
             },

@@ -5,9 +5,10 @@ import { useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useForm } from 'react-hook-form'
-import config from '~/config'
 import { signInWithPopup } from 'firebase/auth'
+import { useNavigate } from 'react-router-dom'
 
+import config from '~/config'
 import * as authServices from '~/services/authService'
 import * as Popper from '~/components/Popper'
 import { showToast } from '~/project/services.'
@@ -20,6 +21,7 @@ const cx = classNames.bind(styles)
 
 const Auth = ({ type = 'login', closeModal = () => {} }) => {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const emailRef = useRef()
     const passwordRef = useRef()
@@ -104,10 +106,14 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
 
         const handleRegister = async () => {
             try {
-                const response = await authServices.register(data)
+                if (data.confirmPassword !== data.password) {
+                    return setError('Nhập lại mật khẩu không đúng, vui lòng nhập lại')
+                }
 
+                const response = await authServices.register(data)
                 if (response) {
                     setUserToRedux(response, 'Đăng kí tài khoản thành công.')
+                    navigate(config.routes.profile)
                 } else {
                     setError(
                         'Đăng kí tài khoản thất bại, vui lòng thử lại hoặc liên hệ với admin qua email: tronghuanxxx@gmail.com'
@@ -180,28 +186,63 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
                                         value: /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/,
                                         message: 'Email không đúng định dạng',
                                     },
+                                    onChange: () => setError(''),
                                 })}
                             />
                             {errors.email && <small className={cx('error')}>{errors.email.message}</small>}
                         </div>
-                        <div className={cx('password-container')}>
-                            <div>
+                        <div>
+                            <div className={cx('password-container')}>
                                 <Input
                                     label="Mật khẩu"
-                                    type="password"
+                                    type={hidePassword ? 'password' : 'text'}
                                     name="password"
-                                    {...register('password', { required: 'Mật khẩu không được bỏ trống' })}
+                                    {...register('password', {
+                                        required: 'Mật khẩu không được bỏ trống',
+                                        onChange: () => setError(''),
+                                    })}
                                 />
-                                {errors.password && <small className={cx('error')}>{errors.password.message}</small>}
+                                <button
+                                    type="button"
+                                    className={cx('toggle-hide-password')}
+                                    onClick={toggleHidePassword}
+                                >
+                                    {!hidePassword ? (
+                                        <FontAwesomeIcon icon={faEye} />
+                                    ) : (
+                                        <FontAwesomeIcon icon={faEyeSlash} />
+                                    )}
+                                </button>
                             </div>
-                            <button className={cx('toggle-hide-password')} onClick={toggleHidePassword}>
-                                {!hidePassword ? (
-                                    <FontAwesomeIcon icon={faEye} />
-                                ) : (
-                                    <FontAwesomeIcon icon={faEyeSlash} />
-                                )}
-                            </button>
+                            {errors.password && <small className={cx('error')}>{errors.password.message}</small>}
                         </div>
+                        {currentType === 'register' && (
+                            <div>
+                                <div className={cx('password-container')}>
+                                    <Input
+                                        label="Nhập lại mật khẩu"
+                                        type={hidePassword ? 'password' : 'text'}
+                                        name="confirmPassword"
+                                        {...register('confirmPassword', {
+                                            required: 'Nhập lại mật không được bỏ trống',
+                                            onChange: () => setError(''),
+                                        })}
+                                    />
+
+                                    <button
+                                        type="button"
+                                        className={cx('toggle-hide-password')}
+                                        onClick={toggleHidePassword}
+                                    >
+                                        {!hidePassword ? (
+                                            <FontAwesomeIcon icon={faEye} />
+                                        ) : (
+                                            <FontAwesomeIcon icon={faEyeSlash} />
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                         {!!error && <span className={cx('error')}>{error}</span>}
                         <Button primary className={cx('login-btn')} type="submit">
                             {currentType === 'login' ? 'Đăng nhập' : 'Đăng kí'}

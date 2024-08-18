@@ -4,6 +4,7 @@ const routeConfig = {
     order: '/order',
     product: '/product',
     cart: '/cart',
+    profile: '/profile',
 }
 
 export default routeConfig

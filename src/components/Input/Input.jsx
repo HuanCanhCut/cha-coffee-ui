@@ -14,7 +14,7 @@ export default forwardRef(function Input(
 
     return (
         <div className={classes}>
-            <input ref={ref} type={type} {...props} className={cx('input')} placeholder=" " />
+            <input ref={ref} type={type} className={cx('input')} placeholder=" " {...props} />
             <label style={{ backgroundColor: backgroundLabel }} className={cx('label')}>
                 {label}
             </label>

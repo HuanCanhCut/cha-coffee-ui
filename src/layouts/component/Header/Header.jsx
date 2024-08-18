@@ -63,7 +63,7 @@ const Header = () => {
     const userMenu = [
         {
             icon: <FontAwesomeIcon icon={faUser} />,
-            title: 'Xem hồ sơ',
+            title: 'Thông tin cá nhân',
         },
 
         ...MENU_ITEM,
