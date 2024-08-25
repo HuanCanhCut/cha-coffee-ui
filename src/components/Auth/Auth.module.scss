@@ -68,6 +68,27 @@
             }
         }
 
+        .forgot-password-container {
+            position: relative;
+
+            .send-verification-code {
+                position: absolute;
+                top: 0;
+                right: 0;
+                height: 44px;
+                border: 1px solid cyan;
+                border-left: none;
+                font-size: 1.4rem;
+                border-radius: 5px;
+            }
+        }
+
+        .forgot-password {
+            font-size: 1.4rem;
+            color: #ffffffcb;
+            cursor: pointer;
+        }
+
         .error {
             font-size: 1.4rem;
             color: #ff5374;

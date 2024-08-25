@@ -64,6 +64,7 @@ const Header = () => {
         {
             icon: <FontAwesomeIcon icon={faUser} />,
             title: 'Thông tin cá nhân',
+            to: config.routes.profile,
         },
 
         ...MENU_ITEM,

@@ -66,3 +66,13 @@ export const updateCurrentUser = async ({ userName, phone_number, address }) => 
         console.log(error)
     }
 }
+
+export const sendVerificationCode = async ({ email }) => {
+    try {
+        return await request.post('auth/forgot-password', {
+            email,
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}

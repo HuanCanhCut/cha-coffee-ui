@@ -23,9 +23,12 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const emailRef = useRef()
-    const passwordRef = useRef()
-    const inputsRef = useRef([emailRef, passwordRef])
+    const emailRef = useRef(null)
+    const passwordRef = useRef(null)
+    const forgotPasswordRef = useRef(null)
+    const confirmPasswordRef = useRef(null)
+
+    const inputsRef = useRef([emailRef, forgotPasswordRef, passwordRef, confirmPasswordRef])
 
     const {
         register,
@@ -33,7 +36,7 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
         formState: { errors },
     } = useForm()
 
-    const [currentType, setCurrentType] = useState(type)
+    const [currentType, setCurrentType] = useState(type) // login, register or forgotPassword
     const [error, setError] = useState('')
 
     const [inputFocusIndex, setInputFocusIndex] = useState(0)
@@ -58,7 +61,18 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
                     if (prev >= inputsRef.current.length - 1) {
                         return 0
                     }
-                    return prev + 1
+
+                    prev++
+
+                    while (inputsRef.current[prev]?.current === null) {
+                        if (prev >= inputsRef.current.length - 1) {
+                            return 0
+                        }
+
+                        prev++
+                    }
+
+                    return prev
                 })
 
                 break
@@ -67,7 +81,18 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
                     if (prev <= 0) {
                         return inputsRef.current.length - 1
                     }
-                    return prev - 1
+
+                    prev--
+
+                    while (inputsRef.current[prev]?.current === null) {
+                        if (prev <= 0) {
+                            return inputsRef.current.length - 1
+                        }
+
+                        prev--
+                    }
+
+                    return prev
                 })
                 break
             case 'Enter':
@@ -159,6 +184,14 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
         }
     }
 
+    const sendVerificationCode = async () => {
+        try {
+            //
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <Popper.Wrapper className={cx('popper-wrapper')}>
             <div className={cx('wrapper')} onKeyDown={handleKeyDown}>
@@ -177,9 +210,6 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
                     <form className={cx('input-group')} onSubmit={handleSubmit(onSubmit)}>
                         <div>
                             <Input
-                                type="text"
-                                label="Email"
-                                name="email"
                                 {...register('email', {
                                     required: 'Email không được bỏ trống',
                                     pattern: {
@@ -188,19 +218,49 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
                                     },
                                     onChange: () => setError(''),
                                 })}
+                                ref={emailRef}
+                                type="text"
+                                label="Email"
+                                name="email"
                             />
                             {errors.email && <small className={cx('error')}>{errors.email.message}</small>}
                         </div>
+                        {currentType === 'forgotPassword' && (
+                            <div className={cx('forgot-password-container')}>
+                                <Input
+                                    {...register('verificationCode', {
+                                        required: 'Mã xác minh không được bỏ trống.',
+                                        onChange: () => setError(''),
+                                    })}
+                                    type="text"
+                                    label="Mã xác minh"
+                                    name="verificationCode"
+                                    ref={forgotPasswordRef}
+                                />
+                                <Button
+                                    type="button"
+                                    primary
+                                    className={cx('send-verification-code')}
+                                    onClick={sendVerificationCode}
+                                >
+                                    Gửi mã
+                                </Button>
+                                {errors.verificationCode && (
+                                    <small className={cx('error')}>{errors.verificationCode.message}</small>
+                                )}
+                            </div>
+                        )}
                         <div>
                             <div className={cx('password-container')}>
                                 <Input
-                                    label="Mật khẩu"
-                                    type={hidePassword ? 'password' : 'text'}
-                                    name="password"
                                     {...register('password', {
                                         required: 'Mật khẩu không được bỏ trống',
                                         onChange: () => setError(''),
                                     })}
+                                    ref={passwordRef}
+                                    label="Mật khẩu"
+                                    type={hidePassword ? 'password' : 'text'}
+                                    name="password"
                                 />
                                 <button
                                     type="button"
@@ -216,17 +276,28 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
                             </div>
                             {errors.password && <small className={cx('error')}>{errors.password.message}</small>}
                         </div>
-                        {currentType === 'register' && (
+                        {currentType === 'login' && (
+                            <span
+                                className={cx('forgot-password')}
+                                onClick={() => {
+                                    setCurrentType('forgotPassword')
+                                }}
+                            >
+                                Quên mật khẩu?
+                            </span>
+                        )}
+                        {(currentType === 'register' || currentType === 'forgotPassword') && (
                             <div>
                                 <div className={cx('password-container')}>
                                     <Input
-                                        label="Nhập lại mật khẩu"
-                                        type={hidePassword ? 'password' : 'text'}
-                                        name="confirmPassword"
                                         {...register('confirmPassword', {
                                             required: 'Nhập lại mật không được bỏ trống',
                                             onChange: () => setError(''),
                                         })}
+                                        label="Nhập lại mật khẩu"
+                                        type={hidePassword ? 'password' : 'text'}
+                                        name="confirmPassword"
+                                        ref={confirmPasswordRef}
                                     />
 
                                     <button

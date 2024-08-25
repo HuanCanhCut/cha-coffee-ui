@@ -64,6 +64,7 @@ export default memo(function MobileMenu({ isOpen, closeMenu = () => {} }) {
                         icon: <FontAwesomeIcon icon={faUser} />,
                         label: 'Thông tin cá nhân',
                         type: 'user-info',
+                        to: config.routes.profile,
                     },
                     {
                         icon: currentUser ? (

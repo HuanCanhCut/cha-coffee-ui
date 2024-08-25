@@ -890,9 +890,9 @@
   integrity sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==
 
 "@types/node@>=12.12.47", "@types/node@>=13.7.0":
-  version "22.4.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.4.2.tgz#55fefb1c3dba2ecd7eb76738c6b80da75760523f"
-  integrity sha512-nAvM3Ey230/XzxtyDcJ+VjvlzpzoHwLsF7JaDRfoI0ytO0mVheerNmM45CtA0yOILXwXXxOrcUWH3wltX+7PSw==
+  version "22.5.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.5.0.tgz#10f01fe9465166b4cab72e75f60d8b99d019f958"
+  integrity sha512-DkFrJOe+rfdHTqqMg0bSNlGlQ85hSoh2TPzZyhHsXnMtligRWpxUySiyw8FY14ITt24HVCiQPWxS3KO/QlGmWg==
   dependencies:
     undici-types "~6.19.2"
 
@@ -1629,7 +1629,7 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
-firebase@^10.12.4:
+firebase@^10.13.0:
   version "10.13.0"
   resolved "https://registry.yarnpkg.com/firebase/-/firebase-10.13.0.tgz#f2c802ccbad9c1335452fd0f326fb3208bcd6102"
   integrity sha512-a8gm8c9CYO98QuXJn7m5W5Gj7kHV8fme81/mQ9dBs+VMz9uI5HdavnMVPXCILputpZFMFpiKK+u7VVsn5lQg+w==
@@ -2400,9 +2400,9 @@ prop-types@^15.7.2, prop-types@^15.8.1:
     react-is "^16.13.1"
 
 protobufjs@^7.2.5:
-  version "7.3.2"
-  resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-7.3.2.tgz#60f3b7624968868f6f739430cfbc8c9370e26df4"
-  integrity sha512-RXyHaACeqXeqAKGLDl68rQKbmObRsTIn4TYVUUug1KfS47YWCo5MacGITEryugIgZqORCvJWEk4l449POg5Txg==
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-7.4.0.tgz#7efe324ce9b3b61c82aae5de810d287bc08a248a"
+  integrity sha512-mRUWCc3KUU4w1jU8sGxICXH/gNS94DvI1gxqDvBzhj1JpcsimQkYiOJfwsPUykUI5ZaspFbSgmBLER8IrQ3tqw==
   dependencies:
     "@protobufjs/aspromise" "^1.1.2"
     "@protobufjs/base64" "^1.1.2"
@@ -2828,7 +2828,12 @@ to-regex-range@^5.0.1:
   dependencies:
     is-number "^7.0.0"
 
-tslib@^2.1.0, tslib@^2.4.0:
+tslib@^2.1.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.7.0.tgz#d9b40c5c40ab59e8738f297df3087bf1a2690c01"
+  integrity sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==
+
+tslib@^2.4.0:
   version "2.6.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.6.3.tgz#0438f810ad7a9edcde7a241c3d80db693c8cbfe0"
   integrity sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==
