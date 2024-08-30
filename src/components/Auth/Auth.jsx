@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { signInWithPopup } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 
@@ -16,6 +16,7 @@ import { actions } from '~/redux'
 import Input from '../Input'
 import Button from '../Button'
 import { GoogleIcon } from '../Icons'
+import SendVerificationCode from './SendVerificationCode'
 
 const cx = classNames.bind(styles)
 
@@ -25,15 +26,16 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
 
     const emailRef = useRef(null)
     const passwordRef = useRef(null)
-    const forgotPasswordRef = useRef(null)
+    const verificationCodeRef = useRef(null)
     const confirmPasswordRef = useRef(null)
 
-    const inputsRef = useRef([emailRef, forgotPasswordRef, passwordRef, confirmPasswordRef])
+    const inputsRef = useRef([emailRef, verificationCodeRef, passwordRef, confirmPasswordRef])
 
     const {
-        register,
+        control,
         handleSubmit,
         formState: { errors },
+        setValue,
     } = useForm()
 
     const [currentType, setCurrentType] = useState(type) // login, register or forgotPassword
@@ -49,6 +51,11 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
 
         inputsRef.current[inputFocusIndex].current?.focus()
     }, [inputFocusIndex])
+
+    useEffect(() => {
+        setInputFocusIndex(0)
+        inputsRef.current[0].current?.focus()
+    }, [currentType])
 
     const handleSwitchType = () => {
         setCurrentType(currentType === 'login' ? 'register' : 'login')
@@ -79,7 +86,12 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
             case 'ArrowUp':
                 setInputFocusIndex((prev) => {
                     if (prev <= 0) {
-                        return inputsRef.current.length - 1
+                        prev = inputsRef.current.length - 1
+                        while (inputsRef.current[prev]?.current === null) {
+                            prev--
+                        }
+
+                        return prev
                     }
 
                     prev--
@@ -119,6 +131,7 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
     }
 
     const onSubmit = async (data) => {
+        if (!data) return
         const handleLogin = async () => {
             const response = await authServices.login(data)
 
@@ -149,6 +162,22 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
             }
         }
 
+        const handleForgotPassword = async () => {
+            try {
+                const { email, password: newPassword, verificationCode: resetCode } = data
+                const response = await authServices.forgotPassword({ email, newPassword, resetCode })
+
+                if (response?.status === 204) {
+                    showToast({ message: 'Thay đổi mật khẩu thành công.', type: 'success' })
+
+                    setCurrentType('login')
+                    setValue('password', '')
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
         try {
             switch (currentType) {
                 case 'login':
@@ -156,6 +185,9 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
                     break
                 case 'register':
                     handleRegister()
+                    break
+                case 'forgotPassword':
+                    handleForgotPassword()
                     break
                 default:
                     break
@@ -184,14 +216,6 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
         }
     }
 
-    const sendVerificationCode = async () => {
-        try {
-            //
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     return (
         <Popper.Wrapper className={cx('popper-wrapper')}>
             <div className={cx('wrapper')} onKeyDown={handleKeyDown}>
@@ -209,42 +233,61 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
                     <h3 className={cx('title')}>{currentType === 'login' ? 'Đăng nhập' : 'Đăng kí'} chà cà phê</h3>
                     <form className={cx('input-group')} onSubmit={handleSubmit(onSubmit)}>
                         <div>
-                            <Input
-                                {...register('email', {
+                            <Controller
+                                name="email"
+                                control={control}
+                                defaultValue=""
+                                rules={{
                                     required: 'Email không được bỏ trống',
                                     pattern: {
                                         value: /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/,
                                         message: 'Email không đúng định dạng',
                                     },
-                                    onChange: () => setError(''),
-                                })}
-                                ref={emailRef}
-                                type="text"
-                                label="Email"
-                                name="email"
+                                    onChange: () => {
+                                        setError('')
+                                    },
+                                }}
+                                render={({ field }) => (
+                                    <Input
+                                        type="text"
+                                        label="Email"
+                                        name="email"
+                                        {...field}
+                                        ref={(e) => {
+                                            field.ref(e)
+                                            emailRef.current = e
+                                        }}
+                                    />
+                                )}
                             />
+
                             {errors.email && <small className={cx('error')}>{errors.email.message}</small>}
                         </div>
                         {currentType === 'forgotPassword' && (
                             <div className={cx('forgot-password-container')}>
-                                <Input
-                                    {...register('verificationCode', {
+                                <Controller
+                                    name="verificationCode"
+                                    control={control}
+                                    defaultValue=""
+                                    rules={{
                                         required: 'Mã xác minh không được bỏ trống.',
                                         onChange: () => setError(''),
-                                    })}
-                                    type="text"
-                                    label="Mã xác minh"
-                                    name="verificationCode"
-                                    ref={forgotPasswordRef}
+                                    }}
+                                    render={({ field }) => (
+                                        <Input
+                                            type="number"
+                                            label="Mã xác minh"
+                                            name="verificationCode"
+                                            {...field}
+                                            ref={(e) => {
+                                                field.ref(e)
+                                                verificationCodeRef.current = e
+                                            }}
+                                        />
+                                    )}
                                 />
-                                <Button
-                                    type="button"
-                                    primary
-                                    className={cx('send-verification-code')}
-                                    onClick={sendVerificationCode}
-                                >
-                                    Gửi mã
-                                </Button>
+
+                                <SendVerificationCode emailRef={emailRef} />
                                 {errors.verificationCode && (
                                     <small className={cx('error')}>{errors.verificationCode.message}</small>
                                 )}
@@ -252,15 +295,23 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
                         )}
                         <div>
                             <div className={cx('password-container')}>
-                                <Input
-                                    {...register('password', {
-                                        required: 'Mật khẩu không được bỏ trống',
-                                        onChange: () => setError(''),
-                                    })}
-                                    ref={passwordRef}
-                                    label="Mật khẩu"
-                                    type={hidePassword ? 'password' : 'text'}
+                                <Controller
                                     name="password"
+                                    control={control}
+                                    defaultValue=""
+                                    rules={{ required: 'Mật khẩu không được bỏ trống', onChange: () => setError('') }}
+                                    render={({ field }) => (
+                                        <Input
+                                            label="Mật khẩu"
+                                            name="password"
+                                            type={hidePassword ? 'password' : 'text'}
+                                            {...field}
+                                            ref={(e) => {
+                                                field.ref(e)
+                                                passwordRef.current = e
+                                            }}
+                                        />
+                                    )}
                                 />
                                 <button
                                     type="button"
@@ -289,15 +340,26 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
                         {(currentType === 'register' || currentType === 'forgotPassword') && (
                             <div>
                                 <div className={cx('password-container')}>
-                                    <Input
-                                        {...register('confirmPassword', {
+                                    <Controller
+                                        name="confirmPassword"
+                                        control={control}
+                                        defaultValue=""
+                                        rules={{
                                             required: 'Nhập lại mật không được bỏ trống',
                                             onChange: () => setError(''),
-                                        })}
-                                        label="Nhập lại mật khẩu"
-                                        type={hidePassword ? 'password' : 'text'}
-                                        name="confirmPassword"
-                                        ref={confirmPasswordRef}
+                                        }}
+                                        render={({ field }) => (
+                                            <Input
+                                                label="Nhập lại mật khẩu"
+                                                type={hidePassword ? 'password' : 'text'}
+                                                name="confirmPassword"
+                                                {...field}
+                                                ref={(e) => {
+                                                    field.ref(e)
+                                                    confirmPasswordRef.current = e
+                                                }}
+                                            />
+                                        )}
                                     />
 
                                     <button
@@ -316,7 +378,11 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
                         )}
                         {!!error && <span className={cx('error')}>{error}</span>}
                         <Button primary className={cx('login-btn')} type="submit">
-                            {currentType === 'login' ? 'Đăng nhập' : 'Đăng kí'}
+                            {currentType === 'login'
+                                ? 'Đăng nhập'
+                                : currentType === 'forgotPassword'
+                                ? 'Đặt lại mật khẩu'
+                                : 'Đăng kí'}
                         </Button>
                     </form>
 
@@ -326,7 +392,7 @@ const Auth = ({ type = 'login', closeModal = () => {} }) => {
                         <span className={cx('separator-line')}></span>
                     </div>
 
-                    <button className={cx('login-with-google')} onClick={handleLoginWithGoogle}>
+                    <button type="button" className={cx('login-with-google')} onClick={handleLoginWithGoogle}>
                         <GoogleIcon width="19px" height="19px" className={cx('google-icon')} />
                         <span className={cx('text')}>{type === 'login' ? 'Đăng nhập' : 'Đăng kí'} với google</span>
                     </button>

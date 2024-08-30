@@ -69,10 +69,24 @@ export const updateCurrentUser = async ({ userName, phone_number, address }) => 
 
 export const sendVerificationCode = async ({ email }) => {
     try {
-        return await request.post('auth/forgot-password', {
+        return await request.post('auth/send-verification-code', {
             email,
         })
     } catch (error) {
         console.log(error)
+    }
+}
+
+export const forgotPassword = async ({ email, newPassword, resetCode }) => {
+    try {
+        return await request.patch('auth/forgot', {
+            email,
+            reset_code: resetCode,
+            new_password: newPassword,
+        })
+    } catch (error) {
+        if (error?.response?.status === 401) {
+            showToast({ message: 'Mã xác minh không đúng', type: 'error' })
+        }
     }
 }
